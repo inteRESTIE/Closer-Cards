@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="theme-color" content="#FAF8F5"/>
+<title>Closer — Card Decks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FAF8F5;--white:#FFF;--ink:#1A1A18;--ink-soft:#4A4A45;--ink-muted:#9A9A94;
+  --accent:#C8A882;--accent-light:#F0E8DC;--accent-dark:#8A6A42;
+  --mental:#8ab4a0;--mental-light:#eef6f3;--mental-dark:#3d7a62;
+  --dating:#b4a0c8;--dating-light:#f5f0fa;--dating-dark:#7a5d96;
+  --border:rgba(26,26,24,.10);--serif:"DM Serif Display",Georgia,serif;--sans:"DM Sans",system-ui,sans-serif;
+  --r:20px;--danger:#D94F4F;
+}
+html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+
+/* PAGES */
+.page{display:none;min-height:100vh}
+.page.active{display:flex;flex-direction:column}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;height:58px;background:rgba(250,248,245,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);flex-shrink:0}
+.logo{font-family:var(--serif);font-size:1.15rem;color:var(--ink);background:none;border:none;cursor:pointer}
+.nav-right{display:flex;gap:.5rem}
+.nb{font-size:.8rem;color:var(--ink-soft);cursor:pointer;background:none;border:1px solid transparent;font-family:var(--sans);padding:6px 12px;border-radius:999px;transition:all .15s}
+.nb:hover{border-color:var(--border);background:var(--white)}
+.nb-pri{background:var(--ink)!important;color:var(--white)!important;border-color:var(--ink)!important}
+
+/* LOGIN */
+#page-login{align-items:center;justify-content:center;padding:2rem}
+.login-box{background:var(--white);border:1px solid var(--border);border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center;box-shadow:0 4px 40px rgba(0,0,0,.07)}
+.login-mark{font-size:2.5rem;margin-bottom:.25rem}
+.login-title{font-family:var(--serif);font-size:2rem;margin-bottom:.25rem}
+.login-sub{font-size:.875rem;color:var(--ink-muted);margin-bottom:2rem}
+.inp{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;font-family:var(--sans);font-size:1rem;color:var(--ink);background:var(--cream);outline:none;transition:border-color .2s;margin-bottom:.75rem}
+.inp:focus{border-color:var(--accent)}
+.lbtn{width:100%;background:var(--ink);color:var(--white);border:none;padding:13px;border-radius:999px;font-family:var(--sans);font-size:.9375rem;font-weight:500;cursor:pointer;transition:opacity .2s;margin-top:.5rem}
+.lbtn:hover{opacity:.82}
+.lerr{font-size:.8125rem;color:var(--danger);margin:.5rem 0;min-height:1.2em}
+
+/* HOME */
+#page-home{background:var(--cream)}
+.home-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:2.5rem 1.25rem 3rem;max-width:560px;margin:0 auto;width:100%}
+.home-eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-dark);background:var(--accent-light);padding:5px 14px;border-radius:999px;margin-bottom:1.25rem}
+.home-title{font-family:var(--serif);font-size:clamp(2rem,8vw,2.8rem);text-align:center;line-height:1.1;letter-spacing:-.02em;margin-bottom:.75rem}
+.home-sub{font-size:.9375rem;color:var(--ink-soft);text-align:center;line-height:1.6;margin-bottom:2.5rem;max-width:420px}
+.mode-list{display:flex;flex-direction:column;gap:1rem;width:100%}
+.mode-btn{width:100%;padding:1.5rem 1.75rem;border-radius:20px;border:none;cursor:pointer;text-align:left;font-family:var(--sans);background:var(--white);box-shadow:0 2px 16px rgba(0,0,0,.07);transition:transform .18s,box-shadow .18s;-webkit-tap-highlight-color:transparent}
+.mode-btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.12)}
+.mode-btn:active{transform:translateY(-1px)}
+.mode-tag{font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .6rem;border-radius:20px;display:inline-block;margin-bottom:.6rem}
+.mode-icon{font-size:1.75rem;display:block;margin-bottom:.35rem}
+.mode-title{font-family:var(--serif);font-size:1.3rem;color:var(--ink);display:block;margin-bottom:.25rem}
+.mode-desc{font-size:.85rem;color:var(--ink-soft);line-height:1.5}
+.mode-btn.couples{border-left:5px solid var(--accent)}
+.mode-btn.mental{border-left:5px solid var(--mental)}
+.mode-btn.dating{border-left:5px solid var(--dating)}
+.mode-btn.couples .mode-tag{background:var(--accent-light);color:var(--accent-dark)}
+.mode-btn.mental .mode-tag{background:var(--mental-light);color:var(--mental-dark)}
+.mode-btn.dating .mode-tag{background:var(--dating-light);color:var(--dating-dark)}
+
+/* DECK PAGE */
+.deck-page{background:var(--cream)}
+.tabs-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:.75rem 1.25rem;border-bottom:1px solid var(--border);background:var(--white);flex-shrink:0;scrollbar-width:none}
+.tabs-scroll::-webkit-scrollbar{display:none}
+.tabs-inner{display:flex;gap:.5rem;width:max-content}
+.tab{padding:7px 16px;border-radius:999px;border:1.5px solid var(--border);background:transparent;color:var(--ink-soft);font-family:var(--sans);font-size:.8125rem;cursor:pointer;transition:all .15s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.tab:hover{border-color:var(--ink-soft);color:var(--ink)}
+.tab.active{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.deck-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.25rem}
+
+/* FLIP CARD */
+.flip-wrap{width:100%;max-width:480px;margin:0 auto}
+
+.flip-stage{width:100%}
+.card-face{border-radius:24px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;padding:2.5rem 2rem;min-height:340px;background:var(--white);border:1.5px solid var(--border);box-shadow:0 8px 48px rgba(0,0,0,.10)}
+
+.front-icon{font-size:2.5rem;margin-bottom:.25rem}
+.front-label{font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-dark)}
+.front-hint{font-size:.875rem;color:var(--accent-dark);opacity:.7;margin-top:.25rem}
+
+.back-cat{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)}
+.back-q{font-family:var(--serif);font-size:clamp(1.35rem,4.5vw,1.7rem);color:var(--ink);line-height:1.35;letter-spacing:-.01em}
+
+/* mental / dating theme overrides */
+.mental-deck .tab.active{background:var(--mental-dark);border-color:var(--mental-dark)}
+.mental-deck .prog-fill{background:var(--mental)}
+.mental-deck .card-face{border-top:4px solid var(--mental)}
+.dating-deck .tab.active{background:var(--dating-dark);border-color:var(--dating-dark)}
+.dating-deck .prog-fill{background:var(--dating)}
+.dating-deck .card-face{border-top:4px solid var(--dating)}
+
+/* CONTROLS */
+.card-actions{display:flex;align-items:center;justify-content:center;gap:.75rem;width:100%;max-width:480px;margin-top:1.25rem}
+.btn-next{background:var(--ink);color:var(--white);border:none;padding:15px 36px;border-radius:999px;font-family:var(--sans);font-size:1rem;font-weight:500;cursor:pointer;transition:opacity .2s,transform .15s;-webkit-tap-highlight-color:transparent;flex:1;max-width:200px}
+.btn-next:hover{opacity:.82}
+.btn-next:active{transform:scale(.97)}
+.btn-arch{background:var(--white);color:var(--ink-soft);border:1.5px solid var(--border);padding:14px 20px;border-radius:999px;font-family:var(--sans);font-size:.875rem;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.btn-nav{width:48px;height:48px;border-radius:50%;border:1.5px solid var(--border);background:var(--white);color:var(--ink-soft);font-size:1.25rem;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.btn-nav:hover{border-color:var(--ink);color:var(--ink);background:var(--ink);color:var(--white)}
+.btn-nav:active{transform:scale(.92)}
+.btn-arch:hover{border-color:var(--accent-dark);color:var(--accent-dark)}
+.btn-arch:active{transform:scale(.97)}
+
+/* PROGRESS */
+.prog-wrap{width:100%;max-width:480px;margin-top:1.25rem;display:flex;align-items:center;gap:.75rem}
+.prog-track{flex:1;height:3px;background:var(--border);border-radius:2px}
+.prog-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease}
+.prog-label{font-size:.78rem;color:var(--ink-muted);white-space:nowrap}
+
+/* ARCHIVE PAGE */
+.arch-body{flex:1;padding:1.5rem 1.25rem;max-width:640px;margin:0 auto;width:100%}
+.arch-title{font-family:var(--serif);font-size:2rem;margin-bottom:.25rem}
+.arch-sub{font-size:.875rem;color:var(--ink-muted);margin-bottom:1.5rem}
+.arch-filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.filt{padding:7px 16px;border-radius:999px;border:1.5px solid var(--border);background:var(--white);font-family:var(--sans);font-size:.8125rem;cursor:pointer;color:var(--ink-soft);transition:all .15s;-webkit-tap-highlight-color:transparent}
+.filt:hover{border-color:var(--ink-soft);color:var(--ink)}
+.filt.on{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.arch-list{display:flex;flex-direction:column;gap:.75rem}
+.arch-item{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:1.1rem 1.25rem;display:flex;gap:1rem;align-items:flex-start}
+.arch-item-body{flex:1}
+.arch-item-cat{font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.35rem}
+.arch-item-q{font-family:var(--serif);font-size:1rem;color:var(--ink);line-height:1.4}
+.arch-item-mode{font-size:.7rem;padding:.2rem .55rem;border-radius:20px;background:var(--accent-light);color:var(--accent-dark);white-space:nowrap;align-self:flex-start;flex-shrink:0}
+.arch-del{background:none;border:none;color:var(--ink-muted);font-size:1.1rem;cursor:pointer;padding:.25rem;line-height:1;transition:color .15s;flex-shrink:0;margin-top:.1rem}
+.arch-del:hover{color:var(--danger)}
+.arch-empty{text-align:center;padding:4rem 2rem;color:var(--ink-muted)}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120px);background:var(--ink);color:var(--white);padding:11px 26px;border-radius:999px;font-size:.875rem;z-index:500;transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* FOOTER */
+footer{padding:1.25rem 1.5rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:.78rem;color:var(--ink-muted);flex-shrink:0}
+.ftr-links{display:flex;gap:.75rem}
+.flink{background:none;border:none;font-family:var(--sans);font-size:.78rem;color:var(--ink-muted);cursor:pointer;padding:0;transition:color .15s}
+.flink:hover{color:var(--ink)}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .4s ease both}
+
+/* MOBILE SAFE AREA */
+@supports(padding:max(0px)){
+  nav{padding-left:max(1.25rem,env(safe-area-inset-left));padding-right:max(1.25rem,env(safe-area-inset-right))}
+  .deck-body{padding-bottom:max(2rem,env(safe-area-inset-bottom))}
+  footer{padding-bottom:max(1.25rem,env(safe-area-inset-bottom))}
+}
+@media(min-width:600px){
+  .card-face{min-height:380px}
+  .back-q{font-size:1.8rem}
+  .home-body{padding:3rem 2rem 4rem}
+}
+@media(max-width:380px){
+  .card-face{min-height:290px}
+  .back-q{font-size:1.25rem}
+}
+
+.shuffle-wrap{text-align:center;margin-top:.6rem}
+.btn-shuffle{background:none;border:1.5px solid var(--border);color:var(--ink-muted);padding:8px 20px;border-radius:999px;font-family:var(--sans);font-size:.8rem;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.btn-shuffle:hover{border-color:var(--ink-soft);color:var(--ink)}
+.btn-shuffle:active{transform:scale(.96)}
+
+.arch-header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.25rem}
+.btn-clear-all{background:none;border:1.5px solid #e0a0a0;color:#c0392b;padding:8px 16px;border-radius:999px;font-family:var(--sans);font-size:.8rem;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;align-self:center}
+.btn-clear-all:hover{background:#c0392b;color:#fff;border-color:#c0392b}
+.arch-cat-clear{display:flex;align-items:center;justify-content:space-between;gap:1rem;background:#fff8f8;border:1.5px solid #f5c6c6;border-radius:12px;padding:.6rem 1rem;margin-bottom:1rem;font-size:.85rem;color:var(--ink-soft)}
+.btn-clear-cat{background:none;border:1.5px solid #e0a0a0;color:#c0392b;padding:6px 14px;border-radius:999px;font-family:var(--sans);font-size:.78rem;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-clear-cat:hover{background:#c0392b;color:#fff;border-color:#c0392b}
+</style>
+</head>
+<body>
+
+<!-- GLOBAL TOAST -->
+<div class="toast" id="global-toast"></div>
+
+<!-- HOME -->
+<div class="page" id="page-home">
+  <nav>
+    <button class="logo">✦ Closer</button>
+    <div class="nav-right">
+      <button class="nb" onclick="openArchive()">Archive</button>
+      </div>
+  </nav>
+  <div class="home-body fade-up">
+    <div class="home-eyebrow">✦ Card Decks</div>
+    <h1 class="home-title">Choose your deck</h1>
+    <p class="home-sub">Three ways to connect. Pick the one that fits your moment.</p>
+    <div class="mode-list">
+      <button class="mode-btn couples" onclick="startMode('couples')">
+        <span class="mode-tag">For couples</span>
+        <span class="mode-icon">💑</span>
+        <span class="mode-title">Couples</span>
+        <span class="mode-desc">830+ questions across 6 categories — from deep and vulnerable to playful and fun.</span>
+      </button>
+      <button class="mode-btn mental" onclick="startMode('mental')">
+        <span class="mode-tag">For best friends</span>
+        <span class="mode-icon">🫂</span>
+        <span class="mode-title">Mental Health &amp; Friends</span>
+        <span class="mode-desc">580+ questions about how you&rsquo;re really doing, hard seasons, your inner world, and who you&rsquo;re becoming.</span>
+      </button>
+      <button class="mode-btn dating" onclick="startMode('dating')">
+        <span class="mode-tag">Getting to know you</span>
+        <span class="mode-icon">✨</span>
+        <span class="mode-title">Dating</span>
+        <span class="mode-desc">254 questions for new connections — fun, thoughtful, and personal.</span>
+      </button>
+    </div>
+  </div>
+  <footer>
+    <span>© 2026 Closer</span>
+    <button class="flink" onclick="openArchive()">Archive</button>
+  </footer>
+</div>
+
+
+<div class="page deck-page" id="page-couples-deck">
+  <nav>
+    <button class="logo" onclick="showPage('home')">✦ Closer</button>
+    <div class="nav-right">
+      <button class="nb" onclick="openArchive()">Archive</button>
+      <button class="nb" onclick="showPage('home')">Home</button>
+    </div>
+  </nav>
+  <div class="tabs-scroll"><div class="tabs-inner" id="couples-tabs"></div></div>
+  <div class="deck-body">
+    <div class="flip-wrap">
+      
+      <div class="flip-stage" id="couples-flip-stage">
+        <div class="card-face">
+          <div class="back-cat" id="couples-back-cat"></div>
+          <div class="back-q" id="couples-back-q"></div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="btn-nav" onclick="prevCard('couples')" title="Previous">&#8592;</button>
+        <button class="btn-next" onclick="nextCard('couples')">Next &#8594;</button>
+        <button class="btn-nav" onclick="archiveCard('couples')" title="Save to archive">&#9675;</button>
+      </div>
+      <div class="shuffle-wrap">
+        <button class="btn-shuffle" onclick="shuffleDeck('couples')">&#x21BA; Shuffle deck</button>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-track"><div class="prog-fill" id="couples-prog-fill"></div></div>
+        <div class="prog-label" id="couples-prog-label"></div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <span>© 2026 Closer</span>
+    <div class="ftr-links">
+      <button class="flink" onclick="showPage('home')">Home</button>
+      <button class="flink" onclick="openArchive()">Archive</button>
+    </div>
+  </footer>
+</div>
+
+<div class="page deck-page mental-deck" id="page-mental-deck">
+  <nav>
+    <button class="logo" onclick="showPage('home')">✦ Closer</button>
+    <div class="nav-right">
+      <button class="nb" onclick="openArchive()">Archive</button>
+      <button class="nb" onclick="showPage('home')">Home</button>
+    </div>
+  </nav>
+  <div class="tabs-scroll"><div class="tabs-inner" id="mental-tabs"></div></div>
+  <div class="deck-body">
+    <div class="flip-wrap">
+      
+      <div class="flip-stage" id="mental-flip-stage">
+        <div class="card-face">
+          <div class="back-cat" id="mental-back-cat"></div>
+          <div class="back-q" id="mental-back-q"></div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="btn-nav" onclick="prevCard('mental')" title="Previous">&#8592;</button>
+        <button class="btn-next" onclick="nextCard('mental')">Next &#8594;</button>
+        <button class="btn-nav" onclick="archiveCard('mental')" title="Save to archive">&#9675;</button>
+      </div>
+      <div class="shuffle-wrap">
+        <button class="btn-shuffle" onclick="shuffleDeck('mental')">&#x21BA; Shuffle deck</button>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-track"><div class="prog-fill" id="mental-prog-fill"></div></div>
+        <div class="prog-label" id="mental-prog-label"></div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <span>© 2026 Closer</span>
+    <div class="ftr-links">
+      <button class="flink" onclick="showPage('home')">Home</button>
+      <button class="flink" onclick="openArchive()">Archive</button>
+    </div>
+  </footer>
+</div>
+
+<div class="page deck-page dating-deck" id="page-dating-deck">
+  <nav>
+    <button class="logo" onclick="showPage('home')">✦ Closer</button>
+    <div class="nav-right">
+      <button class="nb" onclick="openArchive()">Archive</button>
+      <button class="nb" onclick="showPage('home')">Home</button>
+    </div>
+  </nav>
+  <div class="tabs-scroll"><div class="tabs-inner" id="dating-tabs"></div></div>
+  <div class="deck-body">
+    <div class="flip-wrap">
+      
+      <div class="flip-stage" id="dating-flip-stage">
+        <div class="card-face">
+          <div class="back-cat" id="dating-back-cat"></div>
+          <div class="back-q" id="dating-back-q"></div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="btn-nav" onclick="prevCard('dating')" title="Previous">&#8592;</button>
+        <button class="btn-next" onclick="nextCard('dating')">Next &#8594;</button>
+        <button class="btn-nav" onclick="archiveCard('dating')" title="Save to archive">&#9675;</button>
+      </div>
+      <div class="shuffle-wrap">
+        <button class="btn-shuffle" onclick="shuffleDeck('dating')">&#x21BA; Shuffle deck</button>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-track"><div class="prog-fill" id="dating-prog-fill"></div></div>
+        <div class="prog-label" id="dating-prog-label"></div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <span>© 2026 Closer</span>
+    <div class="ftr-links">
+      <button class="flink" onclick="showPage('home')">Home</button>
+      <button class="flink" onclick="openArchive()">Archive</button>
+    </div>
+  </footer>
+</div>
+
+<!-- ARCHIVE -->
+<div class="page" id="page-archive">
+  <nav>
+    <button class="logo">✦ Closer</button>
+    <button class="nb" onclick="showPage('home')">← Home</button>
+  </nav>
+  <div class="arch-body">
+    <div class="arch-header-row">
+      <div>
+        <h1 class="arch-title">Archive</h1>
+        <p class="arch-sub">Cards you&rsquo;ve saved across all decks.</p>
+      </div>
+      <button class="btn-clear-all" onclick="clearAll()" id="btn-clear-all">Clear all</button>
+    </div>
+    <div class="arch-filters" id="arch-filters"></div>
+    <div class="arch-cat-clear" id="arch-cat-clear" style="display:none">
+      <span id="arch-cat-label"></span>
+      <button class="btn-clear-cat" onclick="clearByFilter()">Clear this category</button>
+    </div>
+    <div class="arch-list" id="arch-list"></div>
+  </div>
+  <footer>
+    <span>© 2026 Closer</span>
+    <button class="flink" onclick="showPage('home')">Home</button>
+  </footer>
+</div>
+
+<script>
+const MENTAL_CARDS = {"🫂 How Are You, Really": ["When someone asks how you're doing, what's the answer you give — and what's the real one?", "What's something you've been carrying lately that you haven't said out loud?", "Is there a feeling you've been trying to outrun recently?", "What's been the hardest part of your week that nobody really knows about?", "When was the last time you felt genuinely okay, not just fine?", "What's something you wish someone would just ask you about?", "Is there a version of yourself right now that feels unfamiliar?", "What's taking up the most space in your head these days?", "When you say you're okay, what does okay actually mean for you right now?", "What's a feeling you've been having that you don't know what to do with?", "Is there something you've been needing that you haven't asked for?", "What's the weight you wake up with most mornings?", "What's a truth about how you're doing that you haven't said to anyone yet?", "When did you last cry, and did it help?", "What's something you're pretending is fine that really isn't?", "Is there a part of your life right now that feels like too much?", "What's something you've been doing just to keep going?", "When you imagine someone really seeing how you are right now, what would they see?", "Is there a feeling underneath your 'I'm fine' that you'd describe differently if you had the words?", "What's something you've been trying not to think about?", "What does a hard day feel like in your body?", "Is there a version of rest you're not letting yourself have?", "What's something you're going through that you don't think people would understand?", "When was the last time you felt light, truly light?", "What's a feeling you keep pushing away that keeps coming back?", "What's the thing you most need right now — even if you can't name it exactly?", "Is there a moment recently where you felt completely alone, even in a room full of people?", "What's something you're ashamed of feeling that you actually shouldn't be?", "When you picture yourself a year from now, what do you hope has shifted?", "What's a small thing that has been making your days harder than they should be?", "What's something you've been numb to that you wish you could feel again?", "Is there a story you tell yourself about your own struggles that might not be true?", "What's a question about yourself you're afraid to sit with?", "What's an emotion you haven't named yet but have been living with?", "When did someone last make you feel truly cared for, and what did they do?", "What's something you're hoping changes without you having to ask for help?", "Is there a season of your life you feel stuck in?", "What's been the kindest thing you've done for yourself lately?", "What does 'not okay' feel like for you — what are the signs?", "Is there something you'd want to say if you knew you wouldn't be judged?", "What's something you've been surviving that you deserve credit for?", "When you feel most overwhelmed, what do you reach for?", "What's a feeling you've been too busy to feel?", "Is there something you've lost recently — not a person, but something less visible?", "What's a need of yours that keeps going unmet?", "What would it feel like to say exactly how you are, right now, without softening it?", "Is there a conversation you need to have that you've been putting off?", "What's something that used to bring you joy that doesn't quite reach you anymore?", "What's the bravest thing you've done this week that no one saw?", "What would it mean to you if someone said: I see that you're struggling, and I'm not going anywhere?", "Is there something about your mental health right now that scares you a little?", "What's a thought pattern you keep falling into that you wish you could break?", "When do you feel most like yourself, even on hard days?", "What's something you're grieving that no one else knows about?", "What does your relationship with yourself look like right now, honestly?", "Is there something you need from your support system that you haven't said?", "What would you want people to know about what you're going through, if you could say it without consequences?", "What's a boundary you need to set that terrifies you?", "What does rest mean to you, and are you getting it?", "What's a feeling you've been told is too much — and do you believe that?", "Is there a story from your past that's been louder than usual lately?", "What's something you keep apologizing for that isn't your fault?", "When was the last time you felt proud of yourself?", "What's a belief about yourself during hard times that you're questioning?", "Is there a version of yourself from a happier time that you miss?", "What's something you'd tell yourself a year ago if you could?", "What does your inner voice say to you on your hardest days?", "Is there something you're holding together for everyone else but not for yourself?", "What's something you've been white-knuckling your way through?", "What would it feel like to put the weight down, even just for this conversation?", "Is there a kindness you've been withholding from yourself?", "What's something you're scared to want, because wanting it feels unsafe?", "What does hope feel like for you right now — is it close or far?", "Is there a version of healing you're afraid to believe in?", "What's something you're doing to cope that you're not sure is actually helping?", "When you imagine feeling better, what does that look like?", "What's a word that describes where you are emotionally right now?", "Is there something you've normalized that someone on the outside might be concerned about?", "What's the thing you most need to hear right now?", "What's a feeling that's been following you around lately?", "Is there a part of yourself you're afraid to look at directly?", "What would it mean to you to feel truly supported — what would that look like?", "What's something you haven't let yourself fully feel yet?", "When did you last feel like your full self?", "Is there an emotion you've been performing instead of actually feeling?", "What's a quiet struggle that's been loud inside you?", "What's a small thing that would make today feel more manageable?", "Is there something about the way you've been living lately that doesn't feel like you?", "What's something you're afraid will never get better?", "What's a truth about yourself that you've been gentle about admitting?", "Is there a moment recently where you thought, I need help?", "What's a wound that's been reopened recently that you thought had healed?", "What's something you're holding onto that it might be time to release?", "Is there a version of peace that feels possible for you, even distantly?", "What's a hard emotion that you're trying to make sense of right now?", "When things are hard, what does good support look like to you?", "What's something about your struggles that you've never said out loud?", "Is there a feeling you've been waiting for permission to have?", "What's one thing you'd want me to understand about where you are right now?"], "🌧️ Hard Seasons": ["What's a hard chapter you're in the middle of that you haven't named yet?", "What does this season of your life feel like — if it were weather, what would it be?", "What's something you've been trying to get through that's taking longer than you thought?", "Is there a loss you're still sitting with that people have moved on from talking about?", "What's something that broke — not a thing, but something inside you — that you're still picking up?", "What's the hardest part of right now that you've been keeping to yourself?", "Is there a version of yourself before something happened that you grieve?", "What has this hard season asked of you that you weren't sure you had?", "What's something you've survived that you don't give yourself credit for?", "Is there a pain that's become background noise because it's been there so long?", "What's something that's been taken from you that you're still angry about?", "What does a hard day look like for you — what does your body do, what does your mind do?", "Is there a time in your life you'd go back to just to feel what it felt like before things got hard?", "What's something that changed you in a hard season that you haven't fully processed?", "What's a chapter you closed that you still don't fully understand?", "What's something you miss about a simpler time in your life?", "Is there a fear that's been amplified by something difficult you've been through?", "What's something you wish someone had said to you during your hardest moment?", "What does grief feel like for you — is it big and loud, or quiet and creeping?", "Is there a hard experience you've been carrying longer than feels fair?", "What's something that's been slowly draining you that you haven't told anyone?", "Is there a relationship that's been a source of pain that you're still processing?", "What's a hard season you thought would be over by now?", "What's something you learned about yourself from your hardest days?", "Is there a part of yourself that got quieter after something hard happened?", "What's something you've lost that wasn't a person but still feels like grief?", "What's a moment from a hard time that you keep replaying?", "Is there a wound that never fully healed because no one knew it was there?", "What's something hard that you've been treating like it's not that big a deal?", "What has pain taught you that nothing else could have?", "Is there something difficult you've been carrying alone that you wish you didn't have to?", "What's a season of life that changed you more than you've admitted?", "What's the most exhausting thing about your hard season that no one sees?", "Is there a story you tell about a hard time that's more edited than the truth?", "What does resilience feel like from the inside — is it strength, or just survival?", "What's something you've had to let go of during a difficult time that you didn't want to?", "Is there a hard season that shaped who you are in ways that still hurt?", "What's a painful thing you've been minimizing because others have it worse?", "What's something that blindsided you that you're still finding your footing after?", "Is there a fear born from something hard that now follows you into everyday life?", "What's something you wish you could tell the version of you who was in the worst of it?", "What's a hard experience that changed a relationship in a way that never went back to normal?", "What does it feel like to be in survival mode — what do you notice about yourself?", "Is there something you're ashamed of wanting during a hard time — like rest, or space?", "What's a difficult truth that a hard season forced you to face?", "Is there a version of hope you lost that you're slowly rebuilding?", "What's something that got harder after something difficult that you didn't expect?", "What does it look like when you're not coping well, even if no one can see it?", "Is there a wound that hasn't healed because you haven't had the space to tend to it?", "What's something a hard season stole from you that you're still trying to get back?", "What's a chapter you're in the middle of that you need someone to just witness?", "Is there a hard thing you're going through that you've been making smaller so others don't worry?", "What's the loneliest part of what you're going through right now?", "What's a hard season that no one really understood from the outside?", "Is there a moment in a dark time where someone showed up for you in a way you still remember?", "What's something you've had to do alone during a hard time that you wish you hadn't?", "What does it feel like when a hard season starts to lift — even just a little?", "Is there a painful pattern in your life that you can see but feel stuck in?", "What's something from a hard time that you're still not ready to talk about fully?", "What's a question you've been asking yourself during a hard season that has no answer?", "Is there something you've been waiting to feel better about that isn't getting better?", "What's a thing about a difficult time that you haven't been allowed to be angry about?", "What does it feel like to be at the end of your capacity — what do you notice?", "Is there a hard experience that no one else witnessed that you need to be believed about?", "What's something a hard season taught you that you'd give back if you could?", "What's a moment in a hard time that you found something small to hold onto?", "Is there a person you needed during a hard time who wasn't there — and do you still feel that?", "What's something you've had to grieve quietly?", "What's a fear that only exists because of something hard you've been through?", "Is there a version of yourself you're trying to get back to that might be gone?", "What's a painful thing you've made peace with — or are trying to?", "What does strength look like for you during your hardest seasons?", "Is there something you've survived that still makes you say: I can't believe I made it through that?", "What's something you needed to hear during a hard time that no one said?", "Is there a hard truth about your life right now that you haven't fully accepted?", "What's something you've been grieving that doesn't have a name?", "What's a difficulty that's changed how you see yourself?", "Is there a hard season from your past that still lives in your body?", "What's something you've been getting through on sheer willpower that you wish you had more support for?", "What does surviving look like from the inside — what does it cost?", "Is there something you've been through that you wouldn't wish on anyone but that also made you who you are?", "What's a hard experience that changed what you need from people?", "What's a chapter of your life you're still writing that you didn't expect to be this hard?", "Is there a pain that's been present so long it feels like a part of who you are?", "What's something about a hard time that you're still angry about — and is the anger fair?", "What's a hard season that ended but that you're still recovering from?", "Is there a difficult experience that made you better at something you didn't want to have to be good at?", "What's something you've been trying to outgrow that keeps pulling you back?", "What does it look like when you're struggling but trying not to let it show?", "Is there a loss that others don't know about that has shaped everything?", "What's a hard chapter that you'd want someone to just sit in with you for a while?", "What's something you've had to figure out alone during a difficult time that no one should have to?", "Is there a painful belief about yourself that a hard season reinforced?", "What's something from a hard time that you're still unpacking?", "What does it feel like when things start to get a little better — do you trust it?", "What's a hard thing you've gone through that quietly made you more compassionate?", "Is there a version of your future that a hard season made harder to believe in?", "What's a question about your hard season that you'd want someone to ask you?"], "🧠 Mind & Inner World": ["What's the loudest thought in your mind today?", "Is there a story you tell yourself about who you are that might not be entirely true?", "What does your mind do when you're alone and unoccupied?", "Is there a thought pattern you notice yourself in that you wish you could interrupt?", "What's a belief about yourself that you've held for so long you've never questioned it?", "When your anxiety shows up, what does it sound like?", "Is there a version of reality your brain creates that's worse than actual reality?", "What's something your mind does to protect you that actually limits you?", "What does it feel like when your thoughts are too loud?", "Is there an inner critic inside you — whose voice does it sound like?", "What's a thought you've never said out loud because you're afraid of what it means?", "What does overthinking feel like for you — where does it live?", "Is there a mental habit you have that you wish you could change?", "What's something your mind returns to that you wish it wouldn't?", "When you imagine your inner world, what does it look like — chaotic, quiet, foggy?", "Is there a fear that feels totally irrational but still has power over you?", "What's something you've spent mental energy on that turned out not to matter?", "What does rumination feel like for you, and what triggers it?", "Is there a version of yourself in your head that you're trying to live up to?", "What's a thought that has followed you from childhood into adulthood?", "When your mind is at its kindest toward you, what does it say?", "Is there a narrative about your life that you've been writing for years that might need revising?", "What's something you tell yourself when things go wrong that might be unfair?", "What's the difference between your thinking self and your feeling self right now?", "Is there a mental burden you carry that other people can't see?", "What does your mind do when you're under pressure that you wish it wouldn't?", "Is there a thought you've been avoiding because following it feels dangerous?", "What's something your brain catastrophizes about that rarely actually happens?", "What's the kindest thing your inner voice ever says to you?", "Is there a belief you have about yourself that you've never been able to shake?", "What does a quiet mind feel like for you — does it exist?", "Is there a part of your mind that feels like it belongs to a much younger version of you?", "What's something your mind does automatically that you've only recently noticed?", "When you're at your most anxious, what does your thinking sound like?", "Is there a fear of judgment that lives in your mind that dictates what you do?", "What's a story your mind tells you when you're about to do something brave?", "What does it feel like when your mind and heart are in disagreement?", "Is there a way your mind protects you that also keeps you stuck?", "What's a mental habit from your past that made sense then but doesn't anymore?", "When you're overthinking, what helps you come back to the present?", "Is there a thought you've been ashamed of that you've never said out loud?", "What does your mind do with uncertainty — does it fill in the blanks, or shut down?", "What's a belief about yourself that someone else planted in you that you're still carrying?", "Is there a version of yourself in your mind that's kinder than the one you live with day to day?", "What does it feel like when you can't turn your brain off?", "Is there a mental loop you get stuck in that you've never been able to fully break?", "What's a thought that scared you but turned out to just be a thought?", "What does peace of mind feel like for you — can you describe a moment you had it?", "Is there a fear in your mind that's been there so long you've stopped questioning whether it's true?", "What's something your brain does when you're sad that makes it worse?", "Is there a thought about your worth that you're still working to unlearn?", "What's the kindest thought you could have about yourself right now?", "When your mind is spiraling, what does coming back to solid ground look like?", "Is there a way your mind has protected you that you're grateful for?", "What's a mental pattern you've inherited that you're trying to break?", "What's something you've been thinking about that you haven't been able to articulate yet?", "Is there a version of your inner world you'd want someone to truly understand?", "What's a fear that shows up disguised as something else — like busyness or irritability?", "What does your inner world need that your outer world isn't giving it?", "Is there a way you talk to yourself that you'd never talk to someone you love?", "What's a thought about the future that takes up more space than it probably should?", "Is there something your anxiety tells you that isn't actually true?", "What does self-compassion feel like in your head — is it easy or difficult to access?", "What's a mental habit you've noticed getting worse during stressful times?", "Is there a story your mind tells you about why you don't deserve good things?", "What's something your mind needs more of — stillness, stimulation, meaning?", "Is there a mental weight you've been carrying so long you've forgotten it's there?", "What does it feel like to finally understand something about yourself that's been murky?", "Is there a way you cope mentally that you're not sure is healthy?", "What's something your mind is very good at that you don't give it credit for?", "Is there a thought you've been trying to think your way out of that might need to be felt instead?", "What's something your mind does in relationships that you wish it didn't?", "Is there a belief about life that a hard experience replaced a more hopeful one with?", "What's the quietest fear you have — the one that doesn't make noise but is always there?", "What does your mind do with compliments?", "Is there something you know intellectually but can't seem to feel emotionally?", "What's a thought that has outlasted the situation that created it?", "Is there a version of your story you'd rewrite if you could — not the events, just the meaning?", "What's something your mind does well that you'd never want to change?", "When your mental health is good, what's different about your thoughts?", "Is there a narrative you're ready to update but haven't yet?", "What's something you've figured out about how your mind works that took years to understand?", "Is there a thought you're holding onto that isn't yours to carry?", "What does your mind do when you feel safe — is it different than when you're anxious?", "What's something your inner world needs right now that you haven't given it?", "Is there a version of yourself in your mind that's waiting for permission to show up?", "What's a mental habit you have that once protected you but now holds you back?", "What does it feel like when you're in alignment — when your thoughts and values match?", "Is there something you're thinking that you've been afraid to say because it makes it more real?", "What's a question your mind keeps asking that you haven't answered yet?", "Is there a part of your inner world that no one has ever really been invited into?", "What's something about how your mind works that you wish other people understood?", "Is there a version of mental peace that feels possible for you — what does it look like?", "What's a thought you've dismissed that maybe deserved more attention?", "Is there something you've convinced yourself is fine that your gut knows isn't?", "What does your mind need to hear from me right now?"], "🤍 Friendship & Being Known": ["Is there a version of yourself you've never shown me that you wish I knew?", "What does being a good friend mean to you, and do you feel like you're getting that?", "Is there something you've been going through that you didn't tell me because you didn't want to be a burden?", "What's something you need from our friendship that you haven't said?", "When do you feel most yourself around me?", "Is there something I do that makes you feel truly seen?", "What does it feel like when a friendship is safe — what are the signs for you?", "Is there something about yourself that you've been afraid to show me?", "What's a moment in our friendship that mattered more to you than I probably know?", "What does loneliness feel like for you, even when you're surrounded by people?", "Is there a version of yourself you show most people that isn't quite the full picture?", "What's something you've wanted to talk to me about but kept putting off?", "When you're struggling, what do you wish I would do — what does good support look like?", "Is there a time I showed up for you that meant more than you said in the moment?", "What's something about our friendship you've been taking for granted?", "What makes you feel the most known by another person?", "Is there something you've been holding back in our friendship because you weren't sure how I'd respond?", "What's a quality I have that you've never told me you appreciate?", "What does it mean to you to be truly heard — not just listened to?", "Is there a version of who you are that you've kept hidden in friendship?", "What's something I could do that would make our friendship feel even safer?", "When has a friendship let you down, and how has that shaped what you need from people?", "Is there a part of your life right now that you feel you can't talk about even with people close to you?", "What's something about your inner world that you'd want a close friend to know?", "Is there a feeling you've been afraid to bring to a friendship in case it's too much?", "What does it feel like when you know you're truly loved by someone, not just liked?", "Is there a time in your life where friendship saved you — even just a little?", "What's something you find hard about asking for help from people you love?", "What's a quality in a friend that makes you feel safe enough to be your full self?", "Is there something about your life that you feel like a burden to talk about?", "What's something you've wanted to share with someone close but kept to yourself?", "When you're overwhelmed, do you reach out or pull away — and why?", "Is there something about how you receive care that you wish people knew?", "What does it look like when you feel truly loved by a friend?", "Is there something you've never said to me that you'd like to?", "What's a part of your story you've never fully shared with anyone?", "What does it feel like to be in a friendship where you don't have to perform?", "Is there a version of yourself that you've only let a few people see — and what made that possible?", "What's something you've done for a friend that took more out of you than they knew?", "What's a fear you have about being truly known by someone?", "What does it feel like when a friendship shifts — when it goes from surface to real?", "Is there something you've been wanting to tell me for a while but haven't known how?", "What's something you've needed in a friendship that has rarely been given to you?", "What's a way I could show you I care that you'd really feel?", "Is there a part of yourself that you find it hard to let people in to?", "What does being fully known — not just partly — feel like to you?", "Is there a friendship you lost that you're still grieving?", "What's something about your life right now that you feel disconnected from most people about?", "What's a moment where someone really showed up for you — and what did that do for you?", "Is there a feeling you've been sitting with alone that you've needed to say out loud?", "What's something about how you give friendship that you don't think people notice?", "Is there a part of you that's afraid that if people really knew you, they'd leave?", "What does it feel like when you're with someone who really gets you?", "Is there a version of your life right now that you'd want to walk someone through — slowly?", "What's something I do or say that makes you feel understood?", "Is there a version of yourself in hard times that you've been afraid to show?", "What does it feel like to share something vulnerable and have someone receive it well?", "Is there a friendship where you felt truly safe to fall apart — and what made it possible?", "What's something you've wanted to say to someone you love but the timing never felt right?", "What does it look like when you're hiding something — do you go quiet, or get busy?", "Is there a fear you have about friendship that's made it hard to fully open up?", "What's something you've learned about what you need in friendship from a time someone got it wrong?", "What does it feel like to be cared for without having to ask?", "Is there a conversation about yourself that you've been waiting to have with someone safe?", "What's something about you that you'd want someone who loves you to know — but haven't said?", "When you're struggling, what does a good friend do that actually helps?", "Is there something about our friendship that you're grateful for but haven't said?", "What's a moment in friendship that changed how you understood love?", "Is there a version of yourself that only comes out around certain people — and what does that feel like?", "What does it feel like to not have to explain yourself — to just be understood?", "Is there a part of your life right now that you feel is invisible to even people close to you?", "What's something you've been holding for so long alone that it would feel strange to share?", "Is there a type of support that helps you that people rarely think to offer?", "What's something you've given in friendship that cost you more than the other person knew?", "Is there a feeling about our friendship that you've been wondering whether to say?", "What's a quality in a friend that would make you feel truly safe to be your most honest self?", "Is there something about your inner life right now that you wish you could hand someone to hold for a moment?", "What does it look like when you feel truly embraced — not just tolerated — by someone?", "Is there a version of yourself you keep protected, even from people you love?", "What's something you've needed from friendship that you've rarely let yourself ask for?", "What's the difference between the version of you that most people see and the one that's really there?", "Is there a hope or dream you've been afraid to say out loud in case it doesn't happen?", "What's a moment where someone made you feel like you weren't too much?", "Is there something you'd want me to ask you more often?", "What does it mean to you to have someone in your corner — what does that actually look like?", "Is there a feeling you've been wanting to name out loud with someone safe?", "What's something you carry that would feel lighter if someone else knew about it?", "Is there a truth about yourself that you're only beginning to let people in on?", "What's a version of yourself that you've been scared to introduce to people who matter to you?", "What's the most meaningful thing a friend has ever done for you — and did you tell them?", "Is there a version of you that needs to be heard right now — not fixed, just heard?", "What's something you'd want me to understand about what you're going through?", "Is there a part of yourself that has felt unseen for a long time?", "What would it mean to you if I said: you can tell me anything, and it won't change how I see you?", "What's the thing you most need from a friendship right now?", "Is there something about yourself you're afraid is too much for others to handle?", "What does it feel like to truly not be alone with something?", "Is there a version of yourself you're ready to let someone see?", "What's one thing you'd want me to carry with you — even just a little?"], "🌱 Growth & Who You're Becoming": ["What's a version of yourself you're growing toward that still feels far away?", "Is there something about yourself you've changed that took longer than you expected?", "What's a habit or pattern you've broken that you're quietly proud of?", "What's something you're unlearning that took years to learn in the first place?", "Is there a version of yourself from the past that you've outgrown but still visit sometimes?", "What's a way you've grown that no one else has noticed?", "What does personal growth feel like for you — is it gradual, or does it come in leaps?", "Is there something you're working on becoming that you'd never have imagined a few years ago?", "What's a truth about yourself you've only recently been able to say without shame?", "Is there a pattern you've finally started to break — and how does that feel?", "What's something you used to believe about yourself that you've had to let go of?", "What does your growth look like right now — what's shifting?", "Is there a version of yourself you're scared to become because it would mean letting go of something?", "What's something you've started doing differently in how you treat yourself?", "Is there a lesson you've had to learn more than once before it actually changed you?", "What's something you've accepted about yourself that used to cause you pain?", "Is there a version of yourself in the future that you're building toward — what does it look like?", "What's a fear you've been moving toward instead of running from?", "Is there something you've forgiven yourself for that it took a long time to get there?", "What's a value you've discovered about yourself through hardship?", "Is there a way you've grown in how you handle relationships that you're proud of?", "What's something you've stopped tolerating that you used to accept without question?", "Is there a part of yourself you've reclaimed after losing it for a while?", "What's a belief about the world that's shifted in you as you've grown?", "Is there something you've started saying no to that used to feel impossible?", "What does it feel like when you catch yourself responding differently than your old self would have?", "Is there a version of who you're becoming that excites and terrifies you at the same time?", "What's something you've grown into that once felt completely out of reach?", "Is there a wound you've worked on healing that's genuinely started to close?", "What does progress feel like for you — do you recognize it while it's happening?", "Is there a way you've grown in self-awareness that's changed everything?", "What's something you've stopped needing that you used to think you couldn't live without?", "Is there a version of yourself you've been becoming quietly, without anyone else seeing?", "What's a way you talk to yourself now that's different from how you used to?", "Is there a fear that's gotten smaller — not gone, but smaller — and how did that happen?", "What's something you've started doing for yourself that you're not sure anyone else would understand?", "Is there a value you've built into who you are that came directly from something painful?", "What's a moment you recognized growth in yourself — what happened?", "Is there something about who you're becoming that surprises you?", "What's a version of love — for others or for yourself — that you've grown into?", "Is there an old identity you've had to release to become who you are now?", "What's something you've started trusting about yourself that you didn't before?", "Is there a way you've grown in how you handle hard emotions?", "What does it feel like to be in a season of growth — exciting, exhausting, both?", "Is there a truth about life that you understand now that younger you couldn't have?", "What's a strength you've discovered about yourself through going through something hard?", "Is there a version of yourself you've had to let grieve before you could move forward?", "What's something you used to need from others that you've learned to give yourself?", "Is there a part of your story that used to define you but no longer does?", "What's a version of peace you're building toward — what does it look like?", "Is there something you've become more patient with — including yourself?", "What's a way you've grown in how you show up in friendships?", "Is there a version of yourself three years from now that you're slowly, quietly becoming?", "What's something you've started believing about yourself that you once couldn't?", "Is there a version of your story you're rewriting — not the events, but the meaning?", "What's something you've outgrown that used to feel like safety?", "Is there a wound you've started to understand rather than just survive?", "What's a way your relationship with yourself has changed that no one else can see?", "Is there a version of yourself you've protected for so long you forgot it was protection?", "What's something you've stopped apologizing for?", "Is there a quality you've grown into that once felt impossible for someone like you?", "What's a way you've grown in how you receive care or support?", "Is there a fear you've had that's actually started to lose its grip — how did that happen?", "What's something you've started doing that feels like becoming who you were always meant to be?", "Is there a version of your future that finally feels like yours — not what someone else wanted?", "What's a thing you've let go of that was keeping you from moving forward?", "Is there a way you've grown in how you handle conflict?", "What's something you've started to value about yourself that you used to overlook?", "Is there a lesson that took years of living to actually understand in your bones?", "What's a version of strength you've developed that doesn't look like what you used to think strength was?", "Is there something you've grown through that you now see as part of your foundation?", "What does it feel like when you're living in alignment — when who you are and how you live match?", "Is there a chapter of growth you're in the middle of that you don't fully understand yet?", "What's something you've started to trust about yourself that used to feel unreliable?", "Is there a way you've become more honest with yourself over time — and what made that possible?", "What's a part of yourself you've slowly learned to protect?", "Is there a version of yourself that's finally started to show up — and what let that happen?", "What's something that shifted in you that you can only see now, looking back?", "Is there a way you've grown that feels quiet, almost invisible — but you know it's real?", "What's a version of yourself you've had to fight for?", "Is there a part of who you're becoming that you'd want someone close to you to witness?", "What's something you've learned about who you are that you couldn't have known without going through what you've gone through?", "Is there a way your relationship with yourself is better now than it's ever been — even if there's still work to do?", "What's a version of your life you're building that feels more true to you than anything before it?", "Is there something you're growing into that would have been unimaginable a few years ago?", "What's a way you've grown that you'd want to pass on to someone who's struggling?", "Is there a version of peace with yourself that you're slowly, genuinely approaching?", "What does it mean to you to become more fully yourself — and are you moving toward that?", "Is there something you're becoming that feels like coming home?", "What's a way you've grown that makes you feel like yourself — finally?", "What's the most important thing you've learned about who you are in the past few years?", "Is there a version of growth you're in right now that is painful but that you believe in?", "What's something about who you're becoming that you're proud of — even if it's small?", "What's the kindest thing growth has given you?", "Is there a version of yourself that you now know how to take care of?", "What's the next version of yourself you're building toward — and what would they tell you right now?"], "🔦 Self-Worth & the Inner Critic": ["What does your inner critic say to you most often, and whose voice does it use?", "Is there a belief about your worth that you've carried since childhood?", "When do you feel most like you're not enough — what triggers that?", "What's something you've achieved that your inner critic found a way to minimize?", "Is there a version of yourself that you've been told isn't acceptable?", "What does shame feel like for you — where does it live in your body?", "Is there a thing about yourself that you've never been able to accept but you're trying?", "What's a compliment you've received that you couldn't let in — why?", "Is there a version of 'enough' that feels possible for you, or does the goal always move?", "What's something you've punished yourself for that you wouldn't punish a friend for?", "Is there a critical voice in your head that you know isn't true but still believe?", "What's something about yourself you've been ashamed of that you're slowly making peace with?", "Is there a standard you hold yourself to that no one else could meet?", "What does it feel like when you like yourself — is it a familiar feeling?", "Is there a thing about who you are that you've worked hard to accept?", "What does your inner critic say when something goes wrong — is it fair?", "Is there a version of yourself you've been told is too much, and do you believe it?", "What's something you've hidden about yourself because you were afraid it would confirm your worst fears about who you are?", "Is there a belief about your worth that you've started to question?", "What's something you do to yourself that you'd never do to someone you love?", "Is there a way you diminish your own accomplishments that you've just gotten used to?", "What's a moment you felt truly worthy — not of anything, just inherently okay?", "Is there a standard of 'good enough' that keeps moving every time you get close?", "What's a truth about your worth that you're working to believe?", "Is there something about yourself you've made peace with that used to cause you a lot of pain?", "What does the kindest version of your inner voice sound like — can you hear it?", "Is there a time someone believed in you more than you believed in yourself, and did it matter?", "What's something about who you are that you've started to love, even slowly?", "Is there a thing about yourself that you've been apologizing for your whole life?", "What does it feel like when your self-worth isn't tied to anything external?", "Is there a part of yourself you've been protecting by keeping small?", "What's a way the inner critic shows up disguised as something reasonable?", "Is there a message about your value that you received early on that you're still unpacking?", "What does self-respect look like for you in practice?", "Is there something you've started to accept about yourself that you used to fight?", "What's a thing about yourself that you've learned to be gentler about?", "Is there a version of self-compassion that feels possible for you — even on hard days?", "What does it feel like when you do something well — can you let it in?", "Is there a thing about yourself that you've always judged that others seem to accept easily?", "What's a belief about your own value that you've inherited from someone else?", "Is there a version of yourself that feels fundamentally okay — and how often do you get to be that person?", "What does your self-worth feel like on a day when you haven't 'earned' anything?", "Is there something about how you speak to yourself that you'd change if you could?", "What's a moment you defended yourself — to yourself — and what was that like?", "Is there a comparison you make that consistently makes you feel less?", "What's something about yourself that you'd describe to a friend as a flaw but that might actually be neutral?", "Is there a way you've been harder on yourself than the situation called for?", "What does it feel like to be praised — do you let it land or deflect it?", "Is there a wound to your self-worth that came from someone specific?", "What's something about who you are that you've been slowly learning to stand behind?", "Is there a version of yourself that you feel you have to earn access to?", "What's a lie your inner critic tells you that you almost believe?", "Is there a thing about yourself that you've started to see as a strength after years of seeing it as a flaw?", "What does it feel like when you're being kind to yourself — does it feel natural?", "Is there a part of your identity that you've been told doesn't deserve to take up space?", "What's something you've let yourself want only recently, because you didn't think you deserved it?", "Is there a way you've minimized yourself in relationships to make others more comfortable?", "What's a version of self-love that feels accessible to you, even if self-love in full feels far?", "Is there a belief about your worth that a hard experience reinforced — and is it true?", "What's something about yourself you've recently stopped apologizing for?", "Is there a version of yourself that you're slowly learning to protect?", "What does it feel like when your inner critic is quiet — what do you notice?", "Is there a thing about yourself that, when you're at your best, you actually like?", "What's a way you show yourself care that you're still learning to receive?", "Is there something about yourself that you've needed to grieve before accepting?", "What does it mean to you to feel worthy — not of anything specific, just worthy?", "Is there a version of enoughness that you're slowly building toward?", "What's something you've started to believe about yourself that you didn't before?", "Is there a way you've been smaller than you need to be to feel safe?", "What's a truth about yourself that your inner critic doesn't want you to believe?", "Is there a version of self-acceptance you've visited — even briefly — that you want to return to?", "What's something about who you are that you'd want someone close to you to affirm?", "Is there a part of your identity you've been slowly learning is allowed to exist?", "What does it feel like when someone genuinely sees the good in you — can you receive it?", "Is there a version of your story that makes you the villain — and is that actually fair?", "What's something you've done that you're proud of but haven't let yourself fully acknowledge?", "Is there a part of yourself you've finally started to stop hiding?", "What does your relationship with your own worth feel like right now — honest answer?", "Is there a version of 'good enough' that you're allowing yourself to believe lately?", "What's a way your inner critic has been wrong about you?", "Is there a thing about yourself that other people seem to see more clearly than you do?", "What does it feel like to be on your own side — do you know that feeling?", "Is there a version of self-worth that isn't conditional — can you imagine what that would feel like?", "What's something about yourself you've stopped letting define you in a negative way?", "Is there a belief about your value that you're actively working to replace with something truer?", "What does it mean to you to belong — not to a group, but to yourself?", "Is there a way you're learning to trust yourself that would have felt impossible a few years ago?", "What's something about who you are that deserves more grace than you give it?", "Is there a version of yourself that is worthy of love exactly as you are right now — can you hold that, even just for a moment?", "What's the most compassionate thing you could say to yourself today?", "What's something your worth doesn't depend on, even though it's sometimes hard to remember that?", "What would it mean to fully believe that you are enough?"]};
+const DATING_CARDS = {"✨ First Impressions": ["What's something about you that people almost never guess correctly?", "What's the best question someone has ever asked you on a first date?", "If your personality had a flavor, what would it be?", "What's something you're weirdly passionate about that most people find surprising?", "What's the last thing you got really excited about?", "What's a quality you have that took time to develop but you're proud of now?", "What's something you love that you used to be embarrassed about?", "If someone followed you around for a day, what would surprise them most?", "What's a first impression of you that turns out to be completely wrong?", "What's something quirky about you that you actually love?", "What's the best gift anyone has ever given you — physical or otherwise?", "What's something you do that you've never met anyone else who does?", "What's a detail about yourself that you wish came up more naturally in conversation?", "What do you think makes you genuinely different from most people you know?", "What's a thing you're really good at that has nothing to do with work?", "If you could describe yourself in three words, what would they be — and do you actually like those words?", "What's something about your life right now that you didn't expect to love?", "What's the most interesting thing you've learned in the past month?", "What's a small pleasure in your everyday life that makes you disproportionately happy?", "What's a question you always want people to ask you but rarely do?", "What's your relationship with spontaneity — do you love it or does it stress you out?", "What's a thing about yourself that people have to know you a while to see?", "What's a hobby or interest you've picked up that changed something in you?", "What's something about your daily life that you've made your own?", "What's a way you show care for people that isn't the obvious way?", "What's something you're secretly really good at?", "What do you find genuinely interesting about people — what makes you want to keep talking to someone?", "What's a thing about yourself that you feel like you're always explaining?", "What's something you did recently that felt like the most you you've been?", "What's a belief you hold that most people around you don't share?", "What's a habit you have that you could honestly defend as one of your best?", "What's a detail about your life that sounds ordinary but means something to you?", "What's something about how you were raised that shows up in who you are today?", "What's a personality trait you've grown into that you're glad about?", "What's something that's been making you really happy lately?", "What's a thing you like about yourself that took a long time to like?", "What's something you appreciate about yourself that you don't say out loud often?", "If someone wanted to understand you quickly, what would you want them to know?", "What's the most interesting version of how you ended up where you are in life?", "What's a small thing that reveals a lot about the kind of person you are?", "What's something you're working on right now — personally, not professionally?", "What's a value you hold that quietly shapes most of your decisions?", "What's something about your personality that you're still figuring out?", "What's a way you've surprised yourself recently?", "What's the first thing you notice about a person when you meet them?", "What's a thing you find beautiful about the world that other people might overlook?", "What's a random fact about yourself that has no useful context but is genuinely interesting?", "What's something you do that you think reveals a lot about who you are?", "What's a thing you're learning about yourself through your daily life right now?", "What's something you would want someone to know about you before knowing anything else?"], "😄 Light & Fun": ["What's your go-to karaoke song — and would you actually do it?", "If you could only eat one meal for the rest of your life, what would it be?", "What's the most chaotic thing you've ever done that ended up being the best story?", "If your life had a theme song right now, what would it be?", "What's a movie or show you could quote entirely but are a little embarrassed about?", "If you had to be really good at something completely useless, what would you pick?", "What's a debate you'll get weirdly invested in that has no real stakes?", "What's the most unhinged food combination you love that you can't defend logically?", "If you could have a superpower that only works in mundane situations, what would it be?", "What's the funniest thing that's ever happened to you that you can tell as a story?", "If your personality were a weather event, what would it be today?", "What's a hobby you've tried that was immediately a disaster?", "If you had to describe your vibe in terms of a specific font, what is it?", "What's a completely irrational opinion you hold confidently?", "What's something you're embarrassingly bad at that everyone else seems fine with?", "If you could add one rule to society that everyone had to follow, what would it be?", "What's the most dramatic minor inconvenience you've ever experienced?", "If your friend group had character archetypes, what role would you play?", "What's a skill you have that is genuinely too niche to be useful?", "What's something you'd do immediately if you had a free day with no plans?", "What's a completely unnecessary thing you own that brings you way too much joy?", "What's a fear you have that is genuinely a little ridiculous?", "If you could swap lives with anyone for 24 hours, who would it be and why?", "What's the most elaborate thing you've ever done for something totally trivial?", "If your ideal Sunday had a title, what would it be?", "What's a phrase or word you say so often that people have started pointing it out?", "What's something you did recently that made you feel like a complete chaos agent?", "What's your most controversial take on something completely irrelevant?", "If you could invent a holiday, what would it be and how would people celebrate?", "What's a thing you find deeply satisfying that has no rational explanation?", "What's something you'd want on a billboard just for the chaos of it?", "What's your spirit animal this week — and has it changed from last week?", "What's a completely specific pet peeve that you know is a little unreasonable?", "If you had to describe your sense of humor in three words, what are they?", "What's the most ridiculous item on your bucket list?", "If your last week were a movie genre, what would it be?", "What's something you do when no one is watching that reveals a lot about who you are?", "What's a completely fictional world you'd want to live in for a month?", "What's an achievement you're weirdly proud of that sounds absurd out of context?", "What's something you've said that you immediately couldn't believe came out of your mouth?", "If you could have dinner with any fictional character, who would you have the most fun with?", "What's a conspiracy theory you don't believe but find suspiciously compelling?", "If someone made a documentary about your life, what would the most dramatic scene be?", "What's a game you're convinced you'd be oddly great at?", "What's the most unplanned thing that became one of your favorite memories?", "What's something about your daily habits that is unexplainable but non-negotiable?", "If you could swap one skill you have for any other skill in the world, what would you trade?", "What's an alter ego you'd have if you weren't yourself?", "What's a thing you've done in the name of research that you slightly regret?", "What's the most fun thing you've done recently that no one would believe without context?", "What's a sound or smell that instantly transports you somewhere specific?"], "🤔 Getting Deeper": ["What's something you value that has shifted in the last few years?", "What's a belief you hold about people that most experiences have confirmed?", "What does a life well-lived look like to you — what are the non-negotiables?", "What's something you've changed your mind about that once felt completely fixed?", "What's a quality in people that you find yourself drawn to without being able to fully explain?", "What's something you've learned about yourself from how you handle stress?", "What's a chapter of your life that was hard but that you wouldn't take back?", "What does 'home' mean to you — is it a place, a feeling, a person?", "What's something you know about yourself that took years to admit?", "What's a value you discovered about yourself not through what you said but through what you did?", "What's something that used to matter a lot to you that you've let go of — and how did that feel?", "What's a risk you took that changed how you see yourself?", "What does friendship mean to you at this point in your life — has the definition shifted?", "What's something about yourself that you're still figuring out?", "What's a way you've been surprised by your own resilience?", "What's something you find beautiful about people that doesn't get talked about enough?", "What's a lesson you've had to learn more than once?", "What's something you're still processing from a chapter of your life that looked fine from the outside?", "What does rest actually look like for you — and do you let yourself have it?", "What's a thing about yourself you've recently become more honest about?", "What's something you've started to take more seriously lately?", "What does growth feel like for you — is it gradual or do you notice it in moments?", "What's something you'd describe as a core part of who you are that most people don't see right away?", "What's a way you've surprised yourself in how you've shown up for someone?", "What's something you want more of in your life right now?", "What's a thing you've started valuing more as you've gotten older?", "What does a meaningful day feel like to you — what's in it?", "What's something about how you were raised that you're grateful for?", "What's a thing you've done that felt brave even if it looked small from the outside?", "What's something you're trying to become — slowly, quietly?", "What's a thing you find yourself returning to again and again — a book, a place, an idea?", "What's something about yourself that you're actively trying to understand better?", "What does trust mean to you — how do you know when you have it with someone?", "What's a quality you've always wanted that you're learning to grow?", "What's something you've given yourself permission to be that you couldn't before?", "What's the most meaningful conversation you've had in the past year?", "What's a thing you've realized about what you need from people that you didn't know before?", "What's something about life that still surprises you?", "What's a thing you do or have that you'd describe as sacred?", "What's a question you've been sitting with lately that doesn't have an easy answer?", "What's something you're curious about that has nothing to do with your career?", "What does it feel like when you're being the fullest version of yourself?", "What's something you've learned about kindness that you didn't expect?", "What's a way your relationship with yourself has changed recently?", "What's something you believe in that you've never been able to fully explain?", "What's a thing about the world that still moves you?", "What's a small, ordinary thing that gives your life a lot of meaning?", "What does it look like for you to be genuinely happy — not just okay?", "What's a version of yourself you're working toward?", "What's something you know now about what you need in a relationship that you didn't before?", "What's a truth about yourself that took courage to finally say out loud?"], "🌍 Life & Dreams": ["What's something on your bucket list that's attainable but you haven't done yet?", "What's a place you've been that changed something in you?", "What's a dream you've had that you've started to take seriously?", "If you could change one thing about how you're living your life right now, what would it be?", "What's something you want to do before you reach a certain age — and are you on track?", "What does your ideal ordinary week look like?", "What's a place in the world that feels like it's waiting for you?", "What's a version of success that has nothing to do with money or status?", "What's a thing you've always wanted to learn and keep putting off?", "What's a dream that felt impossible but has started to feel a little more real?", "What's something you'd do if you knew you wouldn't fail?", "What does freedom look like for you in your life right now?", "What's a version of your life five years from now that excites you?", "What's a thing you've decided matters less than you thought — and how did you get there?", "What's something you want to contribute to the world, even in a small way?", "What's a version of your life that you're slowly building that others might not see yet?", "What's an experience you want to have before you're old?", "What's something about the future that you're genuinely hopeful about?", "What's a dream you've had to grieve — and are you at peace with it?", "What's a chapter of your life you're excited to live?", "What does a meaningful career mean to you — how has your answer to that changed?", "What's something you'd do if you had complete freedom for a year?", "What's a version of simplicity you'd choose if you could?", "What's something about how you want to live that most people might not understand?", "What's a thing you've been called to that scares you?", "What's a version of purpose that you're slowly uncovering?", "What's something you want your life to stand for?", "What's a dream you have that you'd be embarrassed to say out loud to most people?", "What's something about your future that you already know will be beautiful?", "What does adventure look like to you — is it travel, or something else?", "What's a place you'd want to disappear to for a month — what would you do there?", "What's a version of home you're still looking for or building?", "What's something you want to teach or pass on someday?", "What's a thing that gives your life the most meaning right now?", "What's a world you'd want to contribute to making better?", "What's a version of yourself in the future that you'd want to be proud of?", "What does enough feel like to you — have you touched it?", "What's a life experience you want to have with someone else — not alone?", "What's something you want to build — not a career, but something real?", "What's a goal you have that's quietly been shaping your decisions?", "What's something about the life you want that you've only recently been honest about?", "What does it feel like to be exactly where you're supposed to be?", "What's a version of your future that involves a kind of courage you're still building?", "What's a thing about where you want to go that surprises even you?", "What's something you want to be different about your life in a year?", "What's a dream you hold gently because it matters too much to rush?", "What's something about life that you find worth celebrating?", "What's a thing you want to do not for any reason except that it would make you feel alive?", "What's a version of the future you'd choose even if it came with uncertainty?", "What's something about how you want to live that is, quietly, already true?", "What's a legacy you hope to leave — not grand, just true?"], "💬 Connection & What You're Looking For": ["What does it feel like when you connect with someone — what are the signs?", "What's something you value in a person that's hard to explain but you know it when you see it?", "What's a quality you need in someone close to you that you've only recently been able to name?", "What does it look like when someone makes you feel comfortable enough to be yourself?", "What's something you've learned about what you need from people through experience?", "What's the difference between someone you like and someone you trust?", "What's a quality in a person that makes you want to open up?", "What does it feel like to be truly understood — not just listened to?", "What's something about connection that still surprises you?", "What does it mean to you to feel safe with a person?", "What's a thing someone can do that immediately makes you trust them more?", "What's something about the way you show care that you wish people noticed more?", "What do you think makes a friendship or relationship genuinely last?", "What's something you've needed in a relationship that you've had trouble asking for?", "What's a quality in yourself that you hope people close to you appreciate?", "What does it feel like to be with someone who really gets you?", "What's something about intimacy — emotional intimacy — that you value most?", "What's a way someone has shown you they care that meant more than the obvious things?", "What do you think is the most underrated quality in a partner or close friend?", "What's something about connection that you're still learning?", "What does it feel like when a conversation goes from small to real — what shifts?", "What's something you want someone to know about how you love?", "What does patience look like to you in a relationship?", "What's something about the way you receive care that people often misread?", "What's a thing you bring to relationships that you think is genuinely valuable?", "What does it feel like when you're with someone and you forget to check your phone?", "What's something you've learned about yourself through a relationship — any kind?", "What's a need you have in relationships that took you a long time to understand?", "What does honesty look like in a relationship to you — where's the line?", "What's something about connection that you find harder than people assume?", "What's a quality you used to overlook in people that you now see is essential?", "What's something you want in a relationship that you've stopped apologizing for wanting?", "What's a way you've grown in how you let people in?", "What does it feel like to really like someone — how do you know?", "What's something about how you love that you'd want someone to understand early on?", "What's a thing that makes you feel seen in a conversation?", "What's something you've learned about what kind of person you're actually drawn to?", "What does a good relationship — any kind — feel like at its best?", "What's something about vulnerability that's gotten easier for you over time?", "What's a thing about yourself in relationships that you're proud of?", "What does trust building look like for you — is it fast or slow?", "What's something about how you show up for people that you'd want recognized?", "What's a quality you look for in people that has nothing to do with what they do or have?", "What does it feel like when you're with someone and you feel like you can breathe?", "What's something you've realized about what you need from the people closest to you?", "What does loyalty look like to you in practice?", "What's a thing about connection that still moves you, no matter how many times it happens?", "What does it mean to you to be chosen — to have someone pick you, again and again?", "What's something about how you love people that you've learned from experience?", "What's something you're looking for in a person that you'd be able to feel before you could explain it?", "What does it mean to you when someone remembers the small things you've said?"]};
+const ALL_CARDS = {
+  "💬 Deep Talk": [
+    "What's a dream you've never told anyone, not even me?",
+    "What does 'home' feel like to you, and do you feel it with me?",
+    "What's one fear you have about our future together?",
+    "Is there something you've always wanted to say to me but haven't?",
+    "What part of yourself do you find hardest to share with me?",
+    "When do you feel most alone, even when I'm around?",
+    "What's a belief you hold that you think I might disagree with?",
+    "What would you want me to understand about how you experience love?",
+    "What's the hardest thing you've ever had to forgive someone for?",
+    "If you could change one decision you've made in life, what would it be?",
+    "What's something you wish people understood about you without having to explain?",
+    "When was the last time you cried, and what was it about?",
+    "What do you think is your biggest emotional blind spot?",
+    "Is there a version of yourself you've left behind that you miss?",
+    "What's something you're still healing from?",
+    "What's a truth about yourself you've only recently come to accept?",
+    "What does vulnerability feel like to you — scary, freeing, or something else?",
+    "What's a part of your childhood that still shapes how you love?",
+    "Have you ever felt truly misunderstood by someone you love?",
+    "What's a secret you've kept so long it feels like part of you?",
+    "What do you think is the difference between loneliness and solitude?",
+    "What's something you pretend not to care about but actually do?",
+    "Is there a relationship in your life you wish had gone differently?",
+    "What does emotional safety mean to you?",
+    "What's something you want to be remembered for?",
+    "When do you feel most like yourself?",
+    "What's a question you're afraid to ask me?",
+    "What's the most significant loss you've experienced?",
+    "What's a feeling you struggle to put into words?",
+    "Is there a part of yourself you're still trying to understand?",
+    "What would you tell your younger self about love?",
+    "What's something you've never fully grieved?",
+    "When you're hurt, what do you wish people would do instead of asking if you're okay?",
+    "What's a story from your past that you rarely share?",
+    "Have you ever felt truly seen by someone? What did that feel like?",
+    "What's the most courageous thing you've ever done emotionally?",
+    "Is there a fear you've overcome that you're proud of?",
+    "What do you think your inner child needs most right now?",
+    "What's a pattern in your relationships you've noticed yourself repeating?",
+    "What does trust feel like in your body when it's broken?",
+    "What's something you've changed your mind about completely?",
+    "What emotion do you find hardest to sit with?",
+    "Is there something from your past that you're still apologizing for internally?",
+    "What's a value you hold that you'd never compromise on?",
+    "When do you feel most disconnected from the people you love?",
+    "What's something you need but find hard to ask for?",
+    "What does your relationship with silence say about you?",
+    "Is there a version of happiness you've given up on?",
+    "What's the most honest thing you can say about yourself right now?",
+    "What do you wish I knew about what it's like to be you?",
+    "What are you most afraid of becoming?",
+    "What's the thing you most want to be understood about in this relationship?",
+    "When you picture the future, what do you hope for most deeply?",
+    "What's a wound that still hasn't fully healed?",
+    "What would you do differently if you weren't afraid of judgment?",
+    "What's one thing you've never felt safe enough to say to anyone?",
+    "What's the emotion that most often gets mistaken for anger in you?",
+    "What's something that makes you feel small, even as an adult?",
+    "Do you feel like you're living the life you were meant to live?",
+    "What's something about your own mind that still surprises you?",
+    "What's the most honest conversation you've ever had?",
+    "What does it mean to you to truly belong somewhere?",
+    "Is there a relationship you've outgrown but still hold on to?",
+    "What's one thing you've always wanted to explore about yourself but haven't?",
+    "What do you think is the most misunderstood thing about you?",
+    "When was the last time you felt genuinely at peace?",
+    "What's something you've accepted about yourself that used to cause you pain?",
+    "What do you think you're still becoming?",
+    "Is there a dream you've quietly abandoned? Do you still miss it?",
+    "What's one thing you're working through right now that feels too raw to share?",
+    "What's the difference between your public self and who you really are?",
+    "What do you reach for when life feels unbearable?",
+    "What's a compliment you've received that you still don't fully believe?",
+    "What's something about your life that looks fine from the outside but isn't?",
+    "When you think about who you are at your core, what do you see?",
+    "What's a fear you've normalized but probably shouldn't have?",
+    "What does it feel like when you're not being your authentic self?",
+    "Is there something you've been meaning to forgive yourself for?",
+    "What's one truth you know about yourself that most people don't?",
+    "What do you wish someone had told you about love earlier in life?",
+    "When do you feel most misaligned with your own values?",
+    "What's something that has changed you permanently?",
+    "What do you think people often get wrong about strength?",
+    "What's a thought you have regularly that you never say out loud?",
+    "When did you last do something that scared you in a good way?",
+    "What's a chapter of your life you haven't fully closed?",
+    "What's something you've done that took a kind of courage no one saw?",
+    "What do you think your greatest personal challenge is right now?",
+    "Is there a version of your life you sometimes wonder about?",
+    "What's the most important lesson heartbreak taught you?",
+    "What makes you feel like you're not enough, and where does that come from?",
+    "What's something you've come to understand about yourself through pain?",
+    "When do you feel most free?",
+    "What does it mean to you to be truly loved?",
+    "What's a question you keep asking yourself with no answer yet?",
+    "What's something you want to let go of but aren't ready to?",
+    "Is there a part of your story you've never told anyone completely?",
+    "What's one way you protect yourself that might also be holding you back?",
+    "What do you think the world would lose if you stopped being who you are?",
+    "What does your relationship with yourself look like on a hard day?",
+    "What's something you believe in that most people around you don't?",
+    "What would it take for you to feel fully at home in yourself?",
+    "What's an assumption about yourself that you're still examining?",
+    "What do you most want someone to say to you right now?",
+    "What's a piece of yourself you've had to fight to hold onto?",
+    "What's something about how you were raised that you're intentionally doing differently?",
+    "What's a moment when you felt truly brave?",
+    "When you're at your lowest, what do you need most?",
+    "What's something you've said 'I'm fine' about for too long?",
+    "What's a relationship that has shaped who you are more than any other?",
+    "What's the most important thing you've learned about yourself in the past year?",
+    "What's something you carry that others can't see?",
+    "What's the thing that keeps you up at night most often?",
+    "What's an emotion you've been taught to suppress?",
+    "What does your inner critic sound like, and whose voice is it?",
+    "What's something you're ready to be honest about with yourself?",
+    "What's one boundary you've set that has genuinely changed your life?",
+    "When do you feel like the truest version of yourself?",
+    "What's something you've had to unlearn about love?",
+    "What would unconditional love mean to you in practice?",
+    "What's a part of your identity that took time to accept?",
+    "What's something beautiful you've found in your hardest season?",
+    "What's one thing you'd want to do over if you could?",
+    "What's something that makes you feel deeply understood?",
+    "What do you think is the bravest thing a person can do emotionally?",
+    "What's something you know now that would have changed everything if you'd known it sooner?",
+    "What's the kindest thing you've ever done for yourself?",
+    "What's a fear that shows up again and again in your life?",
+    "When was the last time you felt genuinely happy, not just okay?",
+    "What's something about the way you love that you're still figuring out?",
+    "What's one thing you wish was easier for you?",
+    "What's something that grounds you when everything feels like too much?",
+    "What's a truth about your life that you've been avoiding?",
+    "What's something you hope people feel when they're around you?",
+    "What does it mean to you to be a good person?",
+    "What's the thing you most want to heal before you're old?",
+    "What would you say to the version of you who was most lost?",
+    "What do you think you need to hear right now, from me?",
+    "What's something you've kept private because you were afraid of the reaction?",
+    "What does love feel like in your body when it's real?",
+    "What's a belief about relationships you've had to let go of?",
+    "What's something you still need to say to someone?",
+    "What's the most important thing your heart is trying to tell you lately?",
+    "What's something you've always wanted to confess but the moment never felt right?",
+    "What's a fear you have about being truly known by someone?",
+    "What emotion do you feel most disconnected from?",
+    "Is there a version of yourself you've been afraid to become?",
+    "What does it mean to you to live with integrity?",
+    "What's the hardest apology you've ever had to give?",
+    "What's a question about life you think is unanswerable?",
+    "What's something you love about yourself that took years to see?"
+  ],
+  "🥰 Us & Our Story": [
+    "What's your favorite memory of us so far?",
+    "What was the moment you knew you were falling for me?",
+    "What's something small I do that makes you feel deeply loved?",
+    "What's a challenge we've overcome that made us stronger?",
+    "How have I changed since we first got together?",
+    "What's a tradition you'd love for us to start?",
+    "What does a perfect ordinary day with me look like to you?",
+    "What's the funniest thing that's happened to us that we still laugh about?",
+    "What's one thing about our relationship you didn't expect when we started?",
+    "What's a moment from our relationship that you replay in your mind?",
+    "How do you think we've grown together as a couple?",
+    "What's a trip or experience you want us to have together someday?",
+    "What's something I did early on that made you think 'this person is different'?",
+    "What's a small habit of mine you secretly love?",
+    "What's the moment you felt most proud of us as a team?",
+    "What's something we've never done together that you want to try?",
+    "What's a lesson our relationship has taught you?",
+    "When do you feel most connected to me?",
+    "What's a conversation we had that you still think about?",
+    "What's something you love about how we communicate?",
+    "What's a sacrifice you've made for us that you'd make again without question?",
+    "When was the last time I surprised you in a good way?",
+    "What's something about our relationship that you think is rare?",
+    "What's a story about us you like to tell other people?",
+    "What's the moment you felt most cared for by me?",
+    "What's something about the way we fight that you actually appreciate?",
+    "How do you think other people see us as a couple?",
+    "What's a quality about me that you admire more and more over time?",
+    "What's something we've built together that you're proud of?",
+    "What's a place that holds a special meaning just for us?",
+    "What's a time I showed up for you in a way that really mattered?",
+    "What's something we always do that you never want to stop?",
+    "What's the most romantic thing we've done that wasn't planned?",
+    "What's something about our early days that you miss?",
+    "What's a memory from us that makes you smile every time?",
+    "What's the kindest thing I've ever said to you?",
+    "What's something we've figured out together that you didn't expect?",
+    "What's a thing I do that makes you feel truly seen?",
+    "What's the most meaningful gift you've received from me — not physical, but emotional?",
+    "What's a song, place, or scent that makes you think of us?",
+    "What's the most honest conversation we've ever had?",
+    "What's something about our love story that you think is beautiful?",
+    "What's a moment that tested us, and how do you feel about how we handled it?",
+    "What's something I've taught you that you didn't know before we met?",
+    "What's a way you've changed because of loving me?",
+    "What's the most fun we've ever had together?",
+    "What's a hard time I got through partly because of you?",
+    "What's something you hope we're still doing together when we're old?",
+    "What's a small moment between us that you know will stay with you forever?",
+    "What's something you appreciate about how we handle disagreements now?",
+    "What's a part of our routine that you treasure?",
+    "What's something you've realized about yourself through being with me?",
+    "What's the most adventurous thing we've done together?",
+    "What's a challenge we haven't faced yet that you feel ready to face with me?",
+    "What's a moment you felt like we were perfectly in sync?",
+    "What's a decision we made together that turned out better than expected?",
+    "What's something you wish I knew about how I make you feel?",
+    "What's a time I made you laugh so hard you couldn't breathe?",
+    "What's something we've learned about love together that you couldn't have learned alone?",
+    "What's a version of us in the future that excites you most?",
+    "What's something you used to take for granted about us that you don't anymore?",
+    "What's a goal we share that you're excited to work toward?",
+    "What's something about our relationship that has surprised you the most?",
+    "What's a memory of us that you want to make sure we never forget?",
+    "What's something you'd love to relive from our relationship?",
+    "What's a way we complement each other that you love?",
+    "What's a moment where you thought 'I'm so lucky this person is mine'?",
+    "What's something about our love that feels timeless to you?",
+    "What's a mistake we made that ended up teaching us something important?",
+    "What's something you want to thank me for that you've never said out loud?",
+    "What's a thing about our relationship that you feel is truly ours — no one else's?",
+    "What's the best date we've ever been on?",
+    "What's something I do when not trying to impress anyone that you love the most?",
+    "What's a dream we've talked about that you hope we actually do?",
+    "What's a way our relationship has made the world feel smaller — in the best way?",
+    "What's something I did during a hard time in your life that you'll never forget?",
+    "What's a thing about us that you want to protect as we grow?",
+    "What's a version of love you found in us that you didn't know existed before?",
+    "What's something about our story that you'd turn into a book or movie scene?",
+    "What's a boundary I've respected that made you feel deeply safe?",
+    "What's a moment where you chose us, even when it was hard?",
+    "What's something about being loved by me that caught you off guard?",
+    "What's one thing about our relationship that people on the outside can't fully understand?",
+    "What's a moment we shared in silence that said everything?",
+    "What's a way I've grown because of you?",
+    "What's something we've created together that belongs just to us?",
+    "What's a time I made you feel completely safe?",
+    "What's the first thing that comes to mind when someone asks you to describe us?",
+    "What's something about the early days of us that still feels alive now?",
+    "What's a way we take care of each other that you think is underrated?",
+    "What's a thing you did for me that you never expected to do for someone?",
+    "What's a moment that felt like the real beginning of us?",
+    "What's something you've never told me about how you felt when we first met?",
+    "What's a way I've shown up for you that still moves you when you think about it?",
+    "What's something about us right now that you want to hold onto exactly as it is?",
+    "What's a quality I have that makes you feel the safest?",
+    "What's the question about our relationship you're most afraid and most excited to answer?",
+    "What's a way you've loved me that you don't think I've fully noticed?",
+    "What's a moment in our story that you consider the turning point?",
+    "What's a piece of your heart that only I have access to?",
+    "What's something you've witnessed in me that made you fall a little more in love?",
+    "What's a time in our relationship you'd go back to, just to feel it again?",
+    "What's a dream you've started to believe is possible because of me?",
+    "What's a thing about us that makes you think love is actually real?",
+    "What's a way being with me has made you more yourself?",
+    "What's something about our relationship that you think is quietly extraordinary?",
+    "What's a small moment we almost missed that ended up meaning everything?",
+    "What's a thing about our love that still surprises you?",
+    "What's something you want us to tell our future selves?",
+    "What's a time you felt the most like a team?",
+    "What's a shared experience that became a reference point in your life?",
+    "What's something you found in us that you didn't know you were looking for?",
+    "What's a thing about our relationship that makes you want to be a better person?",
+    "What's a memory that reminds you of why we started?",
+    "What's an ordinary moment from our life together that has become sacred to you?",
+    "What's something from our relationship you want to carry into everything you do?",
+    "What's a way I've made you feel more alive?",
+    "What's a moment from our relationship that felt like grace?",
+    "What's a time that our relationship asked something hard of you — and you said yes?",
+    "What's the most loving thing you've seen me do, that wasn't for you?",
+    "What's a shared value that you think is the foundation of everything we are?",
+    "What's a thing about our love that feels like home?",
+    "What's the version of us you're most proud of?",
+    "What's something about being chosen by me that still means the world to you?",
+    "What's a moment where you felt like we understood each other without words?",
+    "What's something about our relationship that you'd describe as sacred?",
+    "What's a way that I have loved you that you didn't know you needed?",
+    "What's a gift our relationship has given you that you couldn't have given yourself?",
+    "What's a tiny moment from early on that you think of as a sign we were meant for each other?",
+    "What's a way we've surprised each other that you love?",
+    "What's the most romantic thing about our ordinary life that other people might not see?",
+    "What's something about us that gets better every single year?",
+    "What's a way we fit together that still strikes you as almost too good?",
+    "What's something we've learned together that we couldn't have learned separately?",
+    "What's a quiet thing you do for me that you wonder if I notice?",
+    "What's the version of our story you'd tell a stranger to explain us?"
+  ],
+  "🔮 Our Future": [
+    "Where do you see us in ten years?",
+    "What's one thing you want us to do or experience before we're old?",
+    "How do you want us to handle hard times in the future?",
+    "What kind of couple do you hope we grow into?",
+    "Is there something you've been wanting to work on in yourself — for us?",
+    "What does a life well-lived look like to you, and do I fit into it?",
+    "What's a place you want to live or visit together someday?",
+    "What does our ideal home feel like to you?",
+    "What kind of life do you want us to build?",
+    "What's a goal you have for us that you haven't said out loud yet?",
+    "What do you think our biggest challenge as a couple will be in the future?",
+    "What's something you want us to always make time for, no matter how busy life gets?",
+    "What does growing old with someone look like to you?",
+    "What's a dream for our future that feels both exciting and scary?",
+    "What's something you'd sacrifice for our future together?",
+    "What do you want our home to feel like in ten years?",
+    "What's a milestone you're most looking forward to reaching with me?",
+    "What kind of support do you need from me as we grow?",
+    "What's a habit you want us to build together?",
+    "What does financial security mean to you, and how do you want us to get there?",
+    "What's a value you want to define our family or life together?",
+    "How do you see us handling big decisions as a team?",
+    "What's something you hope we'll still be doing together at 80?",
+    "What do you think is the biggest thing we need to work on as a couple?",
+    "What's a dream career or life path you have that you want me to be part of?",
+    "What's a fear you have about the future that you don't often share?",
+    "What does retirement look like in your imagination — together?",
+    "What's something you want us to stand for as a couple?",
+    "What's a quality you hope we develop together over time?",
+    "How do you want to be as a partner five years from now?",
+    "What's a version of our life together that excites you most?",
+    "What's something that would make you feel like we've succeeded as a couple?",
+    "What's a big life decision you're thinking about that we haven't fully talked through?",
+    "What do you think we'll look back on and be most grateful for?",
+    "What's something you hope to heal or grow past, for the sake of us?",
+    "What kind of community do you want us to be part of together?",
+    "What does adventure look like for you in the next chapter of our life?",
+    "What's a creative project or goal you want us to build together?",
+    "How do you imagine we'll take care of each other when things get hard?",
+    "What's a dream that would require both of us to be brave?",
+    "What's a conversation about the future we keep putting off?",
+    "What's something you want us to still surprise each other with when we're older?",
+    "What kind of parents or caregivers do you hope we'd be?",
+    "What's a ritual or routine you want to build into our future life?",
+    "What's something about our future you're quietly optimistic about?",
+    "What does commitment mean to you in the long run?",
+    "What's a way you want to contribute to the world together?",
+    "What's a dream that would be impossible without each other?",
+    "What's something you're building toward right now, even slowly?",
+    "What does abundance feel like to you — and is it something you want us to create?",
+    "What's a version of our future that scares you but that you're choosing anyway?",
+    "What does it mean to you to be deeply known by someone over decades?",
+    "What's a bucket list item you want to cross off together in the next year?",
+    "What's a quality you want our relationship to be known for?",
+    "What would you want people to say about us at a dinner twenty years from now?",
+    "What's something about your future self that you're working toward right now?",
+    "What's a way our life might look completely different in five years that you're open to?",
+    "What does freedom look like for us in the future?",
+    "What's something you want us to protect at all costs as life gets bigger?",
+    "What's a change you hope to see in yourself as we grow old together?",
+    "What's a place in the world that feels like it's waiting for us?",
+    "What does peace look like in our future home?",
+    "What's a season of life you're most looking forward to with me?",
+    "What's something you want us to create together that outlasts us?",
+    "What's a way you want to be brave together in the next few years?",
+    "What's a thing you need from our future that you haven't asked for yet?",
+    "What kind of love do you want to be known for giving?",
+    "What's a thing about the future that feels uncertain but exciting?",
+    "What's an intention you want to set for us going into the next year?",
+    "What's something you want to fight for in our future?",
+    "What's a way you want to show up for me differently in the future?",
+    "What does a meaningful life together look like to you?",
+    "What's a conversation about our future you've been waiting for the right moment to have?",
+    "What do you imagine our happiest ordinary day in the future looks like?",
+    "What's something about our future that already feels certain to you?",
+    "What's a legacy you want us to leave?",
+    "What kind of support system do you want around us as we grow?",
+    "What's a thing you want to always be curious about together?",
+    "What's a dream you have for us that you're almost afraid to say out loud?",
+    "What's something you want to teach or share with the people around us someday?",
+    "What does it look like to you when two people are truly thriving together?",
+    "What's a thing you want us to always make space for, no matter what life brings?",
+    "What's a future version of us that you think is entirely possible?",
+    "What does security — real, deep security — look like in our future?",
+    "What's a challenge you're glad we'll face together rather than alone?",
+    "What's a thing about the future that makes you feel hopeful about us?",
+    "What's one word you hope describes us in twenty years?",
+    "What's a sacrifice you'd be willing to make for our shared future?",
+    "What's a version of success that only makes sense if you're in it?",
+    "What's a thing you hope to still be learning from me decades from now?",
+    "What do you want our future to say about who we were to each other?",
+    "What's something you want us to start now that our future selves will thank us for?",
+    "What's a risk you want us to take together in the next few years?",
+    "What's a commitment you want to make to each other that we haven't made yet?",
+    "What does growing together — not just growing — mean to you?",
+    "What's a chapter of our story that you can't wait to live?",
+    "What's a part of your future that you want to share with no one else but me?",
+    "What's something you want us to always fight for, no matter what?",
+    "What's a way you want our love to be different — and better — in five years?",
+    "What's something you want our life to feel like someday?",
+    "What does your best self in the future look like — and how do I fit into that picture?",
+    "What's a thing you want us to never stop doing for each other?",
+    "What's a dream that starts with us and ripples outward?",
+    "What's something about our future that you already feel sure of?",
+    "What's a version of our life together that you think is worth fighting for every day?",
+    "What's a hope you have for who I'll be in twenty years?",
+    "What's something about our future that still makes you feel butterflies?",
+    "What does 'forever' feel like to you — terrifying, comforting, or something else entirely?",
+    "What's a way you want to grow as a person for the sake of our future?",
+    "What's a version of our life you're quietly, steadily building toward?",
+    "What's one thing you want our future to hold that we haven't talked about yet?",
+    "What's a future moment you can already imagine vividly — and what does it feel like?",
+    "What's a dream you have that requires me to be in it to come true?",
+    "What does a life of love look like to you when it's fully, deeply lived?",
+    "What's something about our future that you already know will be beautiful?",
+    "What's the most important thing you want to build with me over a lifetime?",
+    "What's a thing you want to promise each other for the road ahead?",
+    "What does 'growing old together' mean to you beyond the surface?",
+    "What's a fear you have about the future that becomes smaller because I'm here?",
+    "What's a thing about us that you want to still be true when everything else has changed?",
+    "What's one version of the future that is, simply, the one you want?",
+    "What's a small daily ritual you want us to have in our future home?",
+    "What's something you want to build or create together in the next decade?",
+    "What does the word 'enough' mean to you for our future?",
+    "What's a long-term goal you have that you haven't fully shared with me?",
+    "What's something about the future that feels uncertain but you're choosing to walk into?",
+    "What's a change you want to make to the way we live in the next year?",
+    "What's a future version of us that you already believe in?",
+    "What's something you want our life to stand for?",
+    "What's a thing you want us to start before the year ends?",
+    "What's a skill you want us to develop together for the future?",
+    "What's something about the future that excites you more than anything?",
+    "What does legacy mean to you, and how do we build one?",
+    "What's a conversation we need to have about the future that we keep avoiding?",
+    "What's something you hope our future selves look back on with pride?",
+    "What's a thing you want to stop waiting for and start building?",
+    "What's one way our future could look completely different — and you'd be okay with that?",
+    "What's a dream you have for us that you're ready to take seriously?",
+    "What's something you want to still be curious about together when we're older?",
+    "What's the one thing you want our future to be defined by?"
+  ],
+  "✨ Gratitude": [
+    "What's something I do for you that you don't thank me enough for?",
+    "In what ways have I helped you grow as a person?",
+    "What's a quality of mine you're most grateful for?",
+    "What's one thing about our relationship you'd never trade?",
+    "What moment with me do you keep returning to in your mind?",
+    "What's something I've done that made a hard day bearable?",
+    "What's a way I've shown up for you that changed something for you?",
+    "What's a small thing I do consistently that you'd miss terribly if it were gone?",
+    "What's something about the way I love you that you don't take for granted?",
+    "What's a gift I've given you — not a physical one — that you still carry?",
+    "What's a time I've made you feel less alone?",
+    "What's something about who I am that you're grateful your life includes?",
+    "What's a way I've made you braver?",
+    "What's something I've said to you that stayed with you longer than I probably realized?",
+    "What's a version of yourself that exists because of me?",
+    "What's a sacrifice I made that you saw, even if I didn't say it out loud?",
+    "What's something I've normalized in your life that used to feel impossible?",
+    "What's a thing you've been able to do because I believed in you?",
+    "What's a quality I have that you've come to rely on more than you expected?",
+    "What's something I've consistently given you that you're not sure you'd have found elsewhere?",
+    "What's a moment where I showed up exactly how you needed and didn't know it?",
+    "What's a thing I've taught you, without trying, just by being who I am?",
+    "What's something about my presence in your life that you can't really put a price on?",
+    "What's a time I made you feel truly valued?",
+    "What's something I've protected you from without you having to ask?",
+    "What's a thing I do that quietly makes your world better?",
+    "What's something I've given you the courage to do or say?",
+    "What's a time I loved you in exactly the way you needed, without instructions?",
+    "What's a way I've made ordinary life feel meaningful?",
+    "What's something about me that you hope rubs off on you over time?",
+    "What's a thing I've done that reminded you love is real?",
+    "What's a moment I was patient with you that you'll never forget?",
+    "What's a quality in me that you think made you a better person by association?",
+    "What's something I've added to your life that you didn't know was missing?",
+    "What's a thing I do that makes you feel like you're home?",
+    "What's a time I surprised you with how much I cared?",
+    "What's something I've forgiven you for that you still feel grateful for?",
+    "What's a way I've helped you heal, even in small ways?",
+    "What's a thing you've watched me do that made you proud to know me?",
+    "What's a moment I gave you something without expecting anything in return?",
+    "What's something about how I treat you that you want me to know you notice?",
+    "What's a thing I've done in our relationship that took courage, and you saw it?",
+    "What's something I've created space for in you that you needed?",
+    "What's a way I've made you feel safe enough to be yourself?",
+    "What's a word you'd use to describe what I've brought into your life?",
+    "What's something I've shown you about love that changed your definition of it?",
+    "What's a thing I've carried with you that made the weight feel lighter?",
+    "What's a moment where my love for you was unmistakable?",
+    "What's something about our relationship that you think is quietly lucky?",
+    "What's a thing I do every day that you'd miss if it disappeared?",
+    "What's something I've helped you become more comfortable with in yourself?",
+    "What's a way I've made you feel less afraid of something?",
+    "What's something I've offered you that no one else has in quite the same way?",
+    "What's a thing about being loved by me that you'd want to bottle and keep forever?",
+    "What's a moment of tenderness from me that you'll carry for a long time?",
+    "What's a thing you've never thanked me for but want to right now?",
+    "What's something I've given you that has grown over time rather than faded?",
+    "What's a way I've respected you that you've noticed and appreciated quietly?",
+    "What's a thing I've done that showed you I was paying attention?",
+    "What's a quality in me that you think the world needs more of?",
+    "What's something I've done for you that felt like a love language you didn't know you spoke?",
+    "What's a way I've been consistent for you when life has felt inconsistent?",
+    "What's something I've helped you see about yourself that you couldn't see before?",
+    "What's a moment I've made you feel like the most important person in the room?",
+    "What's something about how I love you that still feels like a gift?",
+    "What's a thing you're grateful I never gave up on?",
+    "What's a moment I showed up in a way that changed how you think about love?",
+    "What's a quiet thing I do that you want me to know has a loud impact?",
+    "What's something I've added to who you are, just by being in your life?",
+    "What's a way our relationship has made you more hopeful?",
+    "What's something I've witnessed in you that you're glad didn't go unseen?",
+    "What's a way I've stood by you that has meant everything?",
+    "What's something I've offered you in love that still surprises you?",
+    "What's a moment I've made you feel like the right person chose you?",
+    "What's a thing I do that turns the volume of life down, in the best way?",
+    "What's something about having me in your corner that you don't take for granted?",
+    "What's a time I made you feel seen, truly seen — and what did that do for you?",
+    "What's something I've done quietly that you've noticed loudly?",
+    "What's a way I've expanded what you thought was possible for yourself?",
+    "What's a thing I've given you that has quietly shaped how you see yourself?",
+    "What's something I've done in love that you think not everyone would do?",
+    "What's something I've helped make beautiful in your life?",
+    "What's a time you felt grateful for me in a way you haven't told me?",
+    "What's something I've created in your life that didn't exist before me?",
+    "What's a way I've cared for you that words don't fully capture?",
+    "What's something about the way I love you that makes you believe you deserve to be loved well?",
+    "What's a thing I've said or done that has become part of how you talk to yourself?",
+    "What's a way being loved by me has healed something in you?",
+    "What's something you've been able to let go of because I helped you carry it?",
+    "What's a moment between us that you think about when you need to remember what matters?",
+    "What's a thing about how I show up for you that still takes your breath away?",
+    "What's a thing I've done that you wish you could tell your past self is coming?",
+    "What's a way you feel better about yourself because I love you?",
+    "What's something I've made easier just by being who I am?",
+    "What's a way I've honored you that you want me to know has meant everything?",
+    "What's a thing I've done that most people don't notice but you always will?",
+    "What's something about our relationship that makes you feel truly lucky in love?",
+    "What's a thing I've given you that gets more valuable with time?",
+    "What's something you're grateful I never stopped doing, even when it would have been easy to?",
+    "What's a moment where loving me felt like the easiest thing you've ever done?",
+    "What's a way I've enriched your life that has nothing to do with the big moments?",
+    "What's a thing about how I love you that you want to say thank you for, right now?",
+    "What's something I do instinctively that tells you I love you?",
+    "What's a moment where I chose you over something easier?",
+    "What's something about my love for you that feels steady, like weather you can rely on?",
+    "What's something I've carried with you that made a real difference?",
+    "What's a way I've made ordinary life feel like enough?",
+    "What's a thing I've accepted about you that made you feel truly loved?",
+    "What's something I've noticed about you that you didn't know I saw?",
+    "What's a moment of grace I gave you that you still think about?",
+    "What's a thing about being loved by me that you'll want to tell your older self?",
+    "What's something I've given you that grows more meaningful with time?",
+    "What's a moment where my love felt like exactly what you needed?",
+    "What's something I've done that showed you love is also patience?",
+    "What's a way I've made you feel less alone in the world?",
+    "What's something about the way I love you that you think is quietly extraordinary?",
+    "What's something you've never had the right words to thank me for?",
+    "What's something I've done consistently that you'd be devastated to lose?",
+    "What's a way I've loved you through your worst moments?",
+    "What's something about how I care for you that you want to protect forever?",
+    "What's a thing I've done that showed you I was truly paying attention?",
+    "What's something I've given you that you didn't know you needed until I did?",
+    "What's an ordinary day you're grateful we spent together?",
+    "What's something I've helped you believe about yourself?",
+    "What's a thing I've done in love that surprised you — in the best way?",
+    "What's something about our relationship that makes you feel like you got lucky?",
+    "What's a way I've grown for you that you've noticed?",
+    "What's something you want me to know has changed your life?",
+    "What's an act of quiet love from me that meant more than I probably know?",
+    "What's a way I've shown you that love is actually a verb?"
+  ],
+  "🌶️ Intimacy": [
+    "What makes you feel most emotionally close to me?",
+    "Is there a way I can show love to you that I don't do enough?",
+    "When do you feel most seen and understood by me?",
+    "What's something you'd love us to explore together — emotional or physical?",
+    "How do you like to reconnect with me after a disagreement?",
+    "What's a touch or gesture from me that makes you feel instantly safe?",
+    "What does emotional intimacy mean to you, and do you feel it with me?",
+    "What's something that makes you feel desired, beyond the physical?",
+    "When do you feel the most vulnerable with me, in a good way?",
+    "What's something you want more of in our intimate life that you've been hesitant to say?",
+    "What does it feel like when we're truly connected, not just together?",
+    "What's a way I make you feel beautiful or attractive without even trying?",
+    "What's something about the way we are physically together that you love?",
+    "What's a moment of closeness between us that wasn't physical but felt incredibly intimate?",
+    "What does it mean to you to be truly wanted, not just needed?",
+    "What's a barrier to intimacy for you that I might not be aware of?",
+    "What do you need before you can fully open up emotionally?",
+    "What's a form of connection between us that you think we underutilize?",
+    "What makes you feel most attractive in my eyes?",
+    "What's something about physical closeness that still makes you nervous, in a good way?",
+    "What's a kind of intimacy you crave that goes beyond touch?",
+    "What does it mean to you when I hold you without saying a word?",
+    "What's something I do that makes you feel instantly connected to me?",
+    "What's a way you like to be comforted that you haven't fully asked for?",
+    "What does it feel like in your body when we're fully in sync?",
+    "What's a way you want me to initiate closeness that feels most natural to you?",
+    "What's something about the energy between us that you find magnetic?",
+    "What do you think gets in the way of us being fully present with each other?",
+    "What's a way you want to feel more emotionally open with me?",
+    "What's something that makes intimacy feel safe versus unsafe for you?",
+    "What's a part of yourself you haven't fully let me see yet?",
+    "When do you feel the most tender toward me?",
+    "What's something I do physically that always makes you feel loved?",
+    "What does real closeness feel like to you — in your chest, in your mind?",
+    "What's a thing I could do more of that would make you feel most cherished?",
+    "What's something that builds intimacy for you slowly, that I should know about?",
+    "What's a kind of conversation that makes you feel closer to me than any touch could?",
+    "What's something about the way we talk to each other that you find deeply intimate?",
+    "What's a form of vulnerability between us that you want to explore more?",
+    "What's a way you feel most fully held by me — emotionally or physically?",
+    "What's something about our connection that you think is rare and worth protecting?",
+    "When do you feel the most like yourself when we're being intimate?",
+    "What's a boundary around intimacy that you need me to understand better?",
+    "What's something about how I look at you that makes you feel everything?",
+    "What's a form of closeness you grew up without that you've found in us?",
+    "What's something I do that makes you feel completely safe to let your guard down?",
+    "What's a tender thing you want us to do more of that isn't about sex?",
+    "What's a type of touch that communicates love to you more than words can?",
+    "What's something you want to ask me about my experience of our intimacy?",
+    "What's a way I make you feel seen and loved, beyond desire?",
+    "What does afterglow feel like for you — what do you need in those moments?",
+    "What's something about being physically close to me that still gives you butterflies?",
+    "What's a way you want to slow down and be more intentional in our intimate life?",
+    "What's something you'd love to talk about openly that we tend to skip past?",
+    "What does it mean to you when I choose you — physically, emotionally — over and over?",
+    "What's a thing about the way we connect that you think is quietly extraordinary?",
+    "What's a way you feel seen by me that you love?",
+    "What does it feel like to be fully embraced by me, not just held?",
+    "What's something about our emotional intimacy that you want to deepen?",
+    "What's a type of vulnerability you want us to practice more together?",
+    "What's a thing that turns you on emotionally, not physically?",
+    "What's something about our intimacy that has evolved in a way that surprises you?",
+    "What does it mean to you when I choose to be tender with you in a hard moment?",
+    "What's something about your body or heart that you wish I knew more about?",
+    "What's a way intimacy has changed for you over time — with me?",
+    "What's something you want to explore together that would deepen our bond?",
+    "What's a thing about how we come together after conflict that you want to talk about?",
+    "What's an act of care from me that feels deeply intimate to you?",
+    "What's something you haven't said out loud about what you need in closeness?",
+    "What's a way you want me to be more present with you when we're intimate?",
+    "What's a kind of emotional nakedness you've felt with me that you want more of?",
+    "What's something about your own emotional landscape you're still discovering?",
+    "What's a way intimacy makes you feel free that nothing else does?",
+    "What does it mean to you when I put everything else down just to be with you?",
+    "What's a desire — emotional or physical — that you haven't voiced yet?",
+    "What's something about being intimate with me that has healed a part of you?",
+    "What's a thing I do that signals 'I want to be close to you' that you love?",
+    "What's something about the energy of us that you'd describe as magnetic?",
+    "What's a way you want to feel more desired in our day-to-day life?",
+    "What does it feel like for you to let go fully with me?",
+    "What's something about your relationship with closeness that has changed since us?",
+    "What's a way I've made intimacy feel safe that you want me to keep doing?",
+    "What's something you'd explore with me if you knew there was no risk of judgment?",
+    "What's a thing about how we are with each other that you think is deeply loving?",
+    "What's a form of closeness that still feels new and exciting between us?",
+    "What's something you want to get better at in terms of opening up to me?",
+    "What's a type of presence from me that fills you up more than anything?",
+    "What's a way I make you feel held that doesn't involve physical touch?",
+    "What's something you've discovered about yourself through being close with me?",
+    "What's a thing about intimacy you've always wanted but were afraid to want?",
+    "What does it feel like when we're really, truly together?",
+    "What's a quiet kind of closeness you want us to make more room for?",
+    "What's something about intimacy with me that makes you feel most like yourself?",
+    "What's a kind of love you feel in the way I touch you that words don't reach?",
+    "What's a moment of real tenderness between us that you return to?",
+    "What's something about your experience of us that you want to share more openly?",
+    "What's a way I could make you feel more wanted, outside of the obvious moments?",
+    "What's a thing about deep closeness that you're still learning to let yourself have?",
+    "What's something you need emotionally before you can be fully physically present?",
+    "What's a desire you have for our intimate life that feels too vulnerable to name?",
+    "What does it feel like to you when love and desire exist together in one moment?",
+    "What's something that makes you feel both vulnerable and free with me?",
+    "What's a way I make you feel fully present — in the moment with me?",
+    "What's something about our physical closeness that still surprises you?",
+    "What's a form of intimacy you want us to create that is entirely our own?",
+    "What's something about the way I hold you that you want me to know means everything?",
+    "What's a way I've made you feel beautiful that wasn't about your body?",
+    "What's something you want to say about our intimate life that feels too vulnerable to start?",
+    "What's a thing I do in a quiet moment that makes you feel completely chosen?",
+    "What's something about physical closeness that has changed for you over time?",
+    "What's a way you need me to slow down with you?",
+    "What's something about being emotionally open with me that has surprised you?",
+    "What's a form of touch that feels like its own language between us?",
+    "What's something you want more space to explore with me, at any pace?",
+    "What's a thing about our connection that you think is almost impossible to describe?",
+    "What's a way you'd love me to initiate closeness that you haven't told me?",
+    "What's something about our intimacy that has healed something in you?",
+    "What's a thing about how you experience closeness that you wish I understood better?",
+    "What's something you want to be more honest with me about in our intimate life?",
+    "What's a type of presence you need from me to fully open up?",
+    "What's a way you want to deepen the emotional side of our intimacy?",
+    "What's something about being close to me that you never want to stop feeling?",
+    "What's a thing about our physical connection that you'd describe as sacred?",
+    "What's a moment of real intimacy between us that had nothing to do with touch?",
+    "What's something you've been wanting to share about your needs that you keep holding back?",
+    "What's a way our intimacy is different from anything you've experienced before?",
+    "What's something about how we are together that you consider deeply yours?",
+    "What's a desire you have that you're slowly learning it's safe to have?"
+  ],
+  "😄 Fun & Playful": [
+    "If we were characters in a movie, what genre would we be?",
+    "What's the most ridiculous thing you love about me?",
+    "If we could live anywhere in the world for a year, where would you pick?",
+    "What's a talent of mine you brag about to others?",
+    "If you could plan our perfect weekend with no budget, what would we do?",
+    "What song makes you think of us?",
+    "What's a silly nickname you'd give me that actually fits?",
+    "What's the weirdest thing we've bonded over?",
+    "If our relationship was a TV show, what would it be called?",
+    "What's the most spontaneous thing you'd love us to do together?",
+    "What's a food that reminds you of a memory we share?",
+    "If we switched roles for a day, what do you think you'd find hardest about being me?",
+    "What's a totally unrealistic dream date you'd love to go on?",
+    "What's the most embarrassing thing I've done in front of you that you actually love?",
+    "If we could have any superpower as a couple, what would it be and why?",
+    "What fictional couple do you think is most like us?",
+    "What's a game or activity you'd love us to get competitive about?",
+    "What would our couple's Halloween costume be this year?",
+    "What's the funniest misunderstanding we've ever had?",
+    "If I were an animal, what would I be, and why is it so accurate?",
+    "What's a hobby you'd love for us to pick up together?",
+    "What's the strangest thing you find attractive about me?",
+    "If we had a theme song that played every time we entered a room, what would it be?",
+    "What's a road trip playlist you'd make just for us?",
+    "What's something totally random you want to try with me that you've never mentioned?",
+    "If we wrote a book about our relationship, what would the chapter titles be?",
+    "What's the funniest thing you've caught me doing when I didn't know you were watching?",
+    "What's a board game or card game you're convinced you'd beat me at?",
+    "If we could time travel together, where and when would we go?",
+    "What's a ridiculous argument we've had that you'd love to laugh about now?",
+    "If our love language had a flavor, what would it taste like?",
+    "What's a dance move you'd try with me if nobody was watching?",
+    "What's the most surprising thing you've learned about me that still makes you smile?",
+    "If we were a sandwich, what would be in it?",
+    "What's a dare you'd give me right now?",
+    "If we started a business together, what would it be?",
+    "What's something you'd nominate me for an award for?",
+    "What's the quirkiest habit of mine that you've secretly adopted?",
+    "If we had a reality show, what would the dramatic confessional moment be?",
+    "What's a childhood game you'd love to play with me?",
+    "If I wrote you a terrible poem, would you keep it forever? What would you want it to say?",
+    "What's a language or skill you wish we could both learn together?",
+    "What's a totally unnecessary thing you'd splurge on if money weren't a thing?",
+    "If we could be extras in any movie, what would it be and what scene?",
+    "What's a song you'd dedicate to me but pretend is just a coincidence?",
+    "What's a food combination I eat that you find truly baffling?",
+    "If we competed on a cooking show, would we win or be immediately eliminated?",
+    "What's the most fun we've ever had doing something completely mundane?",
+    "If our first date was a movie scene, what's the vibe and who's the lead?",
+    "What's an inside joke between us that still makes you laugh every time?",
+    "If you could change one habit of mine just for fun, what would it be?",
+    "What's something you want to dare each other to do this month?",
+    "What's a sport you'd be devastated to lose to me in?",
+    "What's a childhood memory you want to recreate together?",
+    "What's the most creative compliment you've ever given someone?",
+    "If our relationship had a mascot, what would it be?",
+    "What's a movie you'd force me to rewatch that I'd secretly enjoy?",
+    "What's a completely bizarre talent of mine that you're lowkey impressed by?",
+    "If we had a shared alter ego couple name, what would it be?",
+    "What's an adventure that's so simple it would be embarrassing not to have done yet?",
+    "What's a local place we've never been that we should go to this weekend?",
+    "If we got into a trivia competition, what category would we dominate?",
+    "What's something you'd put in a time capsule just for me?",
+    "What's a ridiculous thing I've said that you quote back to me and always will?",
+    "What's the silliest version of romance you've ever pulled off?",
+    "What's a fact about me that you love to share as a fun party story?",
+    "What's a challenge you'd want to do together for 30 days?",
+    "If we swapped phones for a day, what's the first thing you'd do?",
+    "What's a genre of music you'd never expect me to secretly love?",
+    "What's a festival or event we should absolutely go to someday?",
+    "What would your dating profile have said when we met, honestly?",
+    "What's a wildly optimistic plan you have for a future adventure together?",
+    "What's a prank you'd pull on me that would make you laugh way more than me?",
+    "What's an activity you're terrible at that you'd still do with me happily?",
+    "If we started a podcast, what would it be about?",
+    "What's a totally impractical skill you want us to learn just for the story?",
+    "What's something about me that you find both annoying and endearing?",
+    "If you had to describe our relationship using only food metaphors, what would you say?",
+    "What's the most dramatic thing we've ever done that you now find funny?",
+    "If we could star in any game show, which one and what strategy would we use?",
+    "What's a movie quote that perfectly describes us?",
+    "What's a compliment you'd give me that sounds like an insult but is actually sweet?",
+    "If we wrote a children's book about our relationship, what would the moral be?",
+    "What's a word you'd make up to describe something only we'd understand?",
+    "What's the most elaborate excuse you've made up so we could spend more time together?",
+    "What's a completely random thing you'd want to do together at 2am?",
+    "If I were a meme, which one would I be?",
+    "What's a thing we've done together that is objectively absurd but you'd do again?",
+    "What's a food trend you want us to try together, no matter how weird?",
+    "If we could speak in an invented language only we knew, what would it sound like?",
+    "What's the funniest gift you could give me right now with zero budget?",
+    "What's something we'd be terrible at together that would still be the best time?",
+    "What's a wild, joyful, slightly irresponsible thing you want to do with me soon?",
+    "What's a fictional world you'd want us to live in for a month?",
+    "What's a totally random question you've never asked me but suddenly want to?",
+    "What's a thing about how we laugh together that you think is specific to us?",
+    "What's the longest you've ever kept a secret from me, and was it worth it?",
+    "What's a game you'd invent that would be perfectly designed for the two of us?",
+    "If our love was a natural phenomenon, what would it be?",
+    "What's the most spontaneous, joyful thing we could do together this week?",
+    "What's a wildly specific detail about me that you love but would sound weird to explain?",
+    "If we time-traveled to our first date and watched ourselves, what would make you cringe and what would make you smile?",
+    "What's something you'd add to a relationship bucket list that's purely for fun?",
+    "What's the most fun thing about being us that you'd never be able to explain to a stranger?",
+    "What's a ridiculous tradition you'd want us to commit to forever, no matter what?",
+    "What's a ridiculous bet you'd make with me right now?",
+    "If you could redecorate our space in any wild theme, what would you choose?",
+    "What's an adventure that costs absolutely nothing that you want us to go on?",
+    "What's the most chaotic version of a date night you could come up with?",
+    "What's a personality trait of mine that would make a terrible superhero power?",
+    "If we could compete in any Olympic sport together, which one and what's our strategy?",
+    "What's a fictional technology from a movie that you'd want us to have?",
+    "What's a completely unserious goal you have for us this year?",
+    "What's a wild first impression story we could tell about how we met?",
+    "If we had to survive together on a deserted island, who would last longer and why?",
+    "What's a question you'd ask me on a game show to completely expose me?",
+    "What's an absolutely unnecessary luxury you'd want us to try once?",
+    "If we swapped personalities for a day, what's the first thing you'd do?",
+    "What's the most dramatic thing I do that you find hilarious?",
+    "What's a weird habit of mine you've started doing without realizing?",
+    "If we were a duo in a heist movie, what would our roles be?",
+    "What's a vacation so ridiculous it would make a perfect story forever?",
+    "What's a challenge I definitely can't beat you at, and how sure are you?",
+    "What's something you'd put in a care package for me full of inside jokes?",
+    "If we made a short film together, what would it be about?",
+    "What's a food you'd make up and name after me?",
+    "What's a completely unhinged restaurant order you'd make for me?",
+    "What's a bucket list item that's technically possible but logistically absurd?",
+    "If you had to describe me using only song titles, what would you pick?",
+    "What's a local restaurant you want to be our place that we haven't claimed yet?",
+    "What's something I do that would make a perfect comedy sketch?",
+    "If we hired a biographer, what would the most embarrassing chapter be?",
+    "What's a micro-adventure you want us to go on before the week is out?",
+    "If our relationship were a meme format, which one fits perfectly?",
+    "What's a thing we could do together that's totally unnecessary but would make the best memory?",
+    "What's an activity you'd want us to do badly together, on purpose, just for fun?",
+    "What's the most random act of joy you could think of doing for me today?",
+    "If we wrote vows to each other's weird habits, what would yours say?",
+    "What's a thing about our sense of humor together that you think is uniquely ours?",
+    "What's a sentence that perfectly describes our dynamic that sounds wrong out of context?",
+    "What's the most spontaneous, alive thing we could do together in the next 24 hours?",
+    "What's a totally fictional version of our relationship you'd love to see in a show?",
+    "What's something you'd put on our imaginary couples merchandise?",
+    "What's an elaborate prank you'd want to pull on each other, lovingly?",
+    "What's something about our relationship that sounds made up but is completely real?"
+  ]
+}
+
+
+const ARCH_COUPLES='closer_arch_couples';
+const ARCH_MENTAL='closer_arch_mental';
+const ARCH_DATING='closer_arch_dating';
+
+
+let state={
+  couples:{cat:0,idx:0,deck:[]},
+  mental:{cat:0,idx:0,deck:[]},
+  dating:{cat:0,idx:0,deck:[]},
+};
+let archFilter='all';
+
+// AUTH
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg){pg.classList.add('active');window.scrollTo(0,0)}
+}
+
+
+
+// ── PROGRESS SAVE / LOAD ──
+
+
+
+
+
+
+
+// UTILS
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function showToast(msg){
+  let t=document.getElementById('global-toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),2400);
+}
+function getArch(key){try{return JSON.parse(localStorage.getItem(key)||'[]')}catch{return[]}}
+function saveArch(key,arr){localStorage.setItem(key,JSON.stringify(arr))}
+
+// MODE SELECT
+function startMode(mode){
+  if(mode==='couples'){showPage('couples-deck');initDeck('couples')}
+  else if(mode==='mental'){showPage('mental-deck');initDeck('mental')}
+  else{showPage('dating-deck');initDeck('dating')}
+}
+
+// GENERIC DECK ENGINE
+const DECK_DATA={
+  couples:{cards:null,archKey:'closer_arch_couples'},
+  mental:{cards:MENTAL_CARDS,archKey:'closer_arch_mental'},
+  dating:{cards:DATING_CARDS,archKey:'closer_arch_dating'},
+};
+function deckCards(mode){
+  if(mode==='couples')return ALL_CARDS;
+  return DECK_DATA[mode].cards;
+}
+function allCardsForMode(mode){
+  // Merge all categories into one shuffled deck
+  const data=deckCards(mode);
+  let all=[];
+  Object.values(data).forEach(arr=>all=all.concat(arr));
+  return shuffle(all);
+}
+
+function initDeck(mode){
+  setTimeout(()=>{
+    const cats=Object.keys(deckCards(mode));
+    const tabsEl=document.getElementById(mode+'-tabs');
+    if(tabsEl&&!tabsEl.children.length){
+      // Add "All" tab first
+      const allBtn=document.createElement('button');
+      allBtn.className='tab active';
+      allBtn.textContent='✦ All';
+      allBtn.onclick=()=>switchCat(mode,-1);
+      tabsEl.appendChild(allBtn);
+      // Then individual categories
+      cats.forEach((cat,i)=>{
+        const b=document.createElement('button');
+        b.className='tab';
+        b.textContent=cat;
+        b.onclick=()=>switchCat(mode,i);
+        tabsEl.appendChild(b);
+      });
+    }
+    if(state[mode].deck.length>0){
+      renderCard(mode);
+    } else {
+      switchCat(mode,-1); // start with All by default
+    }
+  },50);
+}
+function switchCat(mode,i){
+  const cats=Object.keys(deckCards(mode));
+  state[mode].cat=i;state[mode].idx=0;
+  if(i===-1){
+    state[mode].deck=allCardsForMode(mode);
+  } else {
+    state[mode].deck=shuffle(deckCards(mode)[cats[i]]);
+  }
+  // Tab highlight: All is index 0 in DOM, cats are offset by 1
+  const tabs=document.querySelectorAll('#'+mode+'-tabs .tab');
+  tabs.forEach((t,j)=>{
+    if(i===-1) t.classList.toggle('active',j===0);
+    else t.classList.toggle('active',j===i+1);
+  });
+  setTimeout(()=>renderCard(mode),0);
+}
+function renderCard(mode){
+  const s=state[mode];
+  const cats=Object.keys(deckCards(mode));
+  const q=s.deck[s.idx]||s.deck[0];
+  const total=s.deck.length;
+  // Find which category this question belongs to (for All mode)
+  let catLabel = s.cat===-1 ? findCat(mode,q) : cats[s.cat];
+  document.getElementById(mode+'-back-cat').textContent=catLabel;
+  document.getElementById(mode+'-back-q').textContent=q;
+  document.getElementById(mode+'-prog-fill').style.width=((s.idx+1)/total*100)+'%';
+  document.getElementById(mode+'-prog-label').textContent=(s.idx+1)+' / '+total;
+}
+
+function findCat(mode,q){
+  const data=deckCards(mode);
+  for(const [cat,arr] of Object.entries(data)){
+    if(arr.includes(q))return cat;
+  }
+  return '';
+}
+
+
+function shuffleDeck(mode){
+  const cats=Object.keys(deckCards(mode));
+  if(state[mode].cat===-1){
+    state[mode].deck=allCardsForMode(mode);
+  } else {
+    state[mode].deck=shuffle(deckCards(mode)[cats[state[mode].cat]]);
+  }
+  state[mode].idx=0;
+  renderCard(mode);
+  showToast('Deck shuffled ↺');
+}
+function nextCard(mode){
+  state[mode].idx=(state[mode].idx+1)%state[mode].deck.length;
+  renderCard(mode);
+}
+function prevCard(mode){
+  state[mode].idx=(state[mode].idx-1+state[mode].deck.length)%state[mode].deck.length;
+  renderCard(mode);
+}
+function archiveCard(mode){
+  const s=state[mode];
+  const cats=Object.keys(deckCards(mode));
+  const q=s.deck[s.idx];
+  const key=DECK_DATA[mode].archKey;
+  const arch=getArch(key);
+  if(!arch.find(a=>a.q===q)){
+    arch.push({q,cat:cats[s.cat],mode,ts:Date.now()});
+    saveArch(key,arch);
+    showToast('Saved ◎');
+  } else {
+    showToast('Already saved');
+  }
+  nextCard(mode);
+}
+
+// ARCHIVE
+function openArchive(){renderArchive();showPage('archive')}
+function filterArchive(f){
+  archFilter=f;
+  document.querySelectorAll('.filt').forEach(b=>b.classList.remove('on'));
+  // highlight active — filt buttons are rebuilt dynamically so query by data attr
+  document.querySelectorAll('.filt').forEach(b=>{
+    if(b.dataset.filter===f)b.classList.add('on');
+  });
+  // show/hide cat clear bar
+  const bar=document.getElementById('arch-cat-clear');
+  const lbl=document.getElementById('arch-cat-label');
+  if(f==='all'){
+    bar.style.display='none';
+  } else {
+    bar.style.display='flex';
+    // label: could be mode or specific category
+    const mL={couples:'💑 Couples',mental:'🫂 Friends',dating:'✨ Dating'};
+    lbl.textContent=mL[f]||f;
+  }
+  renderArchive();
+}
+function buildArchiveFilters(){
+  const filtersEl=document.getElementById('arch-filters');
+  if(filtersEl.children.length)return; // already built
+  const mL={couples:'💑 Couples',mental:'🫂 Friends',dating:'✨ Dating'};
+  // Deck-level filters
+  const deckFilters=[
+    {key:'all',label:'All'},
+    {key:'couples',label:'💑 Couples'},
+    {key:'mental',label:'🫂 Friends'},
+    {key:'dating',label:'✨ Dating'},
+  ];
+  deckFilters.forEach(f=>{
+    const b=document.createElement('button');
+    b.className='filt'+(f.key==='all'?' on':'');
+    b.textContent=f.label;
+    b.dataset.filter=f.key;
+    b.onclick=()=>filterArchive(f.key);
+    filtersEl.appendChild(b);
+  });
+}
+
+function renderArchive(){
+  buildArchiveFilters();
+  const c=document.getElementById('arch-list');
+  const mC={couples:'#C8A882',mental:'#8ab4a0',dating:'#b4a0c8'};
+  const mL={couples:'💑 Couples',mental:'🫂 Friends',dating:'✨ Dating'};
+  const mBg={couples:'var(--accent-light)',mental:'var(--mental-light)',dating:'var(--dating-light)'};
+  const mTx={couples:'var(--accent-dark)',mental:'var(--mental-dark)',dating:'var(--dating-dark)'};
+  let all=[...getArch(ARCH_COUPLES),...getArch(ARCH_MENTAL),...getArch(ARCH_DATING)].sort((a,b)=>b.ts-a.ts);
+  if(archFilter!=='all')all=all.filter(a=>a.mode===archFilter);
+
+  // Show/hide clear-all button
+  const clearAllBtn=document.getElementById('btn-clear-all');
+  if(clearAllBtn)clearAllBtn.style.display=all.length?'':'none';
+
+  if(!all.length){
+    c.innerHTML='<div class="arch-empty"><div style="font-size:2.5rem;margin-bottom:.75rem">◎</div><p>No saved cards yet.</p><p style="font-size:.85rem;margin-top:.5rem">Tap ◎ while playing to save a card.</p></div>';
+    return;
+  }
+  c.innerHTML=all.map((a,i)=>`
+    <div class="arch-item" style="border-left:4px solid ${mC[a.mode]||'#C8A882'}">
+      <div class="arch-item-body">
+        <div class="arch-item-cat">${a.cat}</div>
+        <div class="arch-item-q">${a.q}</div>
+      </div>
+      <span class="arch-item-mode" style="background:${mBg[a.mode]};color:${mTx[a.mode]}">${mL[a.mode]||''}</span>
+      <button class="arch-del" onclick="delCard(${i})" title="Remove">×</button>
+    </div>
+  `).join('');
+}
+function delCard(i){
+  let all=[...getArch(ARCH_COUPLES),...getArch(ARCH_MENTAL),...getArch(ARCH_DATING)].sort((a,b)=>b.ts-a.ts);
+  if(archFilter!=='all')all=all.filter(a=>a.mode===archFilter);
+  const card=all[i];if(!card)return;
+  const key=card.mode==='couples'?ARCH_COUPLES:card.mode==='mental'?ARCH_MENTAL:ARCH_DATING;
+  saveArch(key,getArch(key).filter(a=>!(a.q===card.q&&a.ts===card.ts)));
+  renderArchive();
+}
+
+function clearByFilter(){
+  if(archFilter==='all')return;
+  if(!confirm('Clear all archived cards in this category?'))return;
+  if(archFilter==='couples')saveArch(ARCH_COUPLES,[]);
+  else if(archFilter==='mental')saveArch(ARCH_MENTAL,[]);
+  else if(archFilter==='dating')saveArch(ARCH_DATING,[]);
+  renderArchive();
+  showToast('Category cleared');
+}
+
+function clearAll(){
+  if(!confirm('Clear ALL archived cards? This cannot be undone.'))return;
+  saveArch(ARCH_COUPLES,[]);
+  saveArch(ARCH_MENTAL,[]);
+  saveArch(ARCH_DATING,[]);
+  renderArchive();
+  showToast('Archive cleared');
+}
+
+// KEYBOARD
+document.addEventListener('keydown',e=>{
+  const p=document.querySelector('.page.active');if(!p)return;
+  const id=p.id;
+  const mode=id==='page-couples-deck'?'couples':id==='page-mental-deck'?'mental':id==='page-dating-deck'?'dating':null;
+  if(!mode)return;
+  if(e.key==='ArrowRight'||e.key==='Enter'){e.preventDefault();nextCard(mode)}
+  else if(e.key==='ArrowLeft'){e.preventDefault();prevCard(mode)}
+});
+
+// INIT
+showPage('home');
+</script>
+</body>
+</html>
